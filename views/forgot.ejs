@@ -22,7 +22,6 @@
 </head>
 
 <body>
-
     <form action="/forgot" method="post" class="ui huge form">
         <div class="field">
             <h1>Forgot Your Password?</h1>
@@ -31,12 +30,12 @@
         </div>
         <button style="flex: 1;float: left;width: 30%;" type="submit"
             class="ui black huge submit button">Submit</button>
-        <% if (typeof message != 'undefined') { %>
-        <h4><%= message %></h4>
-        <% } %>
+        <% if (typeof message !='undefined' ) { %>
+            <h4>
+                <%= message %>
+            </h4>
+            <% } %>
     </form>
-
-
 </body>
 
 </html>

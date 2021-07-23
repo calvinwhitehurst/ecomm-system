@@ -1,36 +1,28 @@
-var express = require("express");
-var router = express.Router();
-var passport = require("passport");
-var bcrypt = require("bcrypt-nodejs");
-var request = require("request");
-var LocalStrategy = require("passport-local").Strategy;
-var moment = require("moment");
-const fetch = require("node-fetch");
-var isLoggedIn = require("./custom_modules/isLoggedIn");
-var connection = require("./custom_modules/connection");
-var queries = require("./custom_modules/queries");
-var sqlQuery = require("./custom_modules/sqlQuery.js");
-var mustAdmin = require("./custom_modules/mustAdmin.js");
-var fetchJSON = require("./custom_modules/fetchJSON.js");
-var daysAgo = require("./custom_modules/daysAgo.js");
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
+const bcrypt = require("bcrypt-nodejs");
+const LocalStrategy = require("passport-local").Strategy;
+const moment = require("moment");
+const isLoggedIn = require("./custom_modules/isLoggedIn");
+const connection = require("./custom_modules/connection");
+const queries = require("./custom_modules/queries");
+const mustAdmin = require("./custom_modules/mustAdmin.js");
 
 passport.use(
   "local-signup",
   new LocalStrategy(
     {
-      // by default, local strategy uses username and password, we will override with email
       usernameField: "username",
       passwordField: "password",
       emailField: "email",
-      passReqToCallback: true, // allows us to pass back the entire request to the callback
+      passReqToCallback: true,
     },
-    function (req, username, password, done) {
-      // find a user whose email is the same as the forms email
-      // we are checking to see if the user trying to login already exists
+    (req, username, password, done) => {
       connection.query(
         "SELECT * FROM users WHERE username = ?",
         [username],
-        function (err, rows) {
+        (err, rows) => {
           if (err) return done(err);
           if (rows.length) {
             return done(
@@ -39,24 +31,20 @@ passport.use(
               req.flash("signupMessage", "That username is already taken.")
             );
           } else {
-            var mysqlTimestamp = moment(Date.now()).format(
+            let mysqlTimestamp = moment(Date.now()).format(
               "MMMM Do YYYY, h:mm a"
-            ); //get current date
-            var picture = "matt.jpg";
-            // if there is no user with that username
-            // create the user
-            var newUserMysql = {
+            ); 
+            let picture = "matt.jpg";
+            let newUserMysql = {
               username: username,
-              password: bcrypt.hashSync(password, null, null), // use the generateHash function in our user model
+              password: bcrypt.hashSync(password, null, null),
               roles: req.body.roles,
               lastLogin: mysqlTimestamp,
               picture: picture,
               email: req.body.email,
             };
-
-            var insertQuery =
+            let insertQuery =
               "INSERT INTO users ( username, password, roles, lastLogin, picture, email ) values (?,?,?,?,?,?)";
-
             connection.query(
               insertQuery,
               [
@@ -67,9 +55,8 @@ passport.use(
                 newUserMysql.picture,
                 newUserMysql.email
               ],
-              function (err, rows) {
+              (rows) => {
                 newUserMysql.id = rows.insertId;
-
                 return done(null, newUserMysql);
               }
             );
@@ -80,11 +67,11 @@ passport.use(
   )
 );
 
-router.get("/users", isLoggedIn, mustAdmin, function (req, res) {
+router.get("/users", isLoggedIn, mustAdmin, (req, res) => {
   connection.query(
     queries.users + queries.userName,
     req.user.username,
-    function (err, rows, fields) {
+    (rows) => {
       res.render("users", {
         user: req.user,
         rows: rows[0],
@@ -94,11 +81,11 @@ router.get("/users", isLoggedIn, mustAdmin, function (req, res) {
   );
 });
 
-router.get("/createuser", isLoggedIn, mustAdmin, function (req, res) {
+router.get("/createuser", isLoggedIn, mustAdmin, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    function (err, rows, fields) {
+    (rows) => {
       res.render("createuser", {
         message: req.flash("signupMessage"),
         user: req.user,
@@ -118,15 +105,13 @@ router.post(
   })
 );
 
-router.get("/users/(:id)", function (req, res) {
-  //look into more
-  var id = req.params.id;
-  connection.query(queries.usersid, id, function (error, result) {
+router.get("/users/(:id)", (res) => {
+  connection.query(queries.usersid, id, () => {
     res.redirect("/users");
   });
 });
 
-router.get("/settings", isLoggedIn, mustAdmin, function (req, res) {
+router.get("/settings", isLoggedIn, mustAdmin, (req, res) => {
   connection.query(
     queries.storesCreate +
       queries.stores +
@@ -135,7 +120,7 @@ router.get("/settings", isLoggedIn, mustAdmin, function (req, res) {
       queries.warehousesExclude +
       queries.userName,
     req.user.username,
-    function (err, rows) {
+    (rows) => {
       res.render("settings", {
         user: req.user,
         rows: rows[1],
@@ -148,20 +133,20 @@ router.get("/settings", isLoggedIn, mustAdmin, function (req, res) {
   );
 });
 
-router.post("/settings", function (req, res) {
-  var id = req.body.locid;
-  var abbrev = req.body.abbrev.replace(/ /g, "_");
-  var name = req.body.name;
-  var api_key = req.body.api_key;
-  var pswrd = req.body.pswrd;
-  var shop_url = req.body.shop_url
+router.post("/settings", (req, res) => {
+  let id = req.body.locid;
+  let abbrev = req.body.abbrev.replace(/ /g, "_");
+  let name = req.body.name;
+  let api_key = req.body.api_key;
+  let pswrd = req.body.pswrd;
+  let shop_url = req.body.shop_url
     .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
     .split("/")[0];
-  var logo_url = req.body.logo_url;
-  var country = req.body.country;
-  var email = req.body.email;
-  var warehouse = req.body.warehouse;
-  var post = {
+  let logo_url = req.body.logo_url;
+  let country = req.body.country;
+  let email = req.body.email;
+  let warehouse = req.body.warehouse;
+  let post = {
     id: id,
     abbrev: abbrev,
     name: name,
@@ -173,27 +158,26 @@ router.post("/settings", function (req, res) {
     email: email,
     warehouse: warehouse,
   };
-  connection.query(queries.storesInsert, post, function (err) {
+  connection.query(queries.storesInsert, post, (err) => {
     if (err) throw err;
     res.redirect("/settings");
   });
 });
 
-router.post("/settings/(:id)", function (req, res) {
-  var locid = req.body.locid;
-  var abbrev = req.body.abbrev;
-  var name = req.body.name;
-  var api_key = req.body.api_key;
-  var pswrd = req.body.pswrd;
-  var shop_url = req.body.shop_url
+router.post("/settings/(:id)", (req, res) => {
+  let locid = req.body.locid;
+  let abbrev = req.body.abbrev;
+  let name = req.body.name;
+  let api_key = req.body.api_key;
+  let pswrd = req.body.pswrd;
+  let shop_url = req.body.shop_url
     .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
     .split("/")[0];
-  var logo_url = req.body.logo_url;
-  var country = req.body.country;
-  var warehouse = req.body.warehouse;
-  var email = req.body.email;
-  var id = req.params.id;
-
+  let logo_url = req.body.logo_url;
+  let country = req.body.country;
+  let warehouse = req.body.warehouse;
+  let email = req.body.email;
+  let id = req.params.id;
   connection.query(
     queries.storesUpdate,
     [
@@ -209,50 +193,47 @@ router.post("/settings/(:id)", function (req, res) {
       warehouse,
       id,
     ],
-    function (error, results, fields) {
+    () => {
       res.redirect("/settings");
     }
   );
 });
 
-router.get("/settings/(:id)", function (req, res) {
-  var id = req.params.id;
-  connection.query(queries.storesDelete, id, function (error, result) {
+router.get("/settings/(:id)", (req, res) => {
+  let id = req.params.id;
+  connection.query(queries.storesDelete, id, () => {
     res.redirect("/settings");
   });
 });
 
-router.post("/settings/wh/(:id)", function (req, res) {
-  var name = req.body.name;
-  var shortname = req.body.shortname;
-  var id = req.params.id;
-  connection.query(queries.warehouseUpdate, [name, shortname, id], function (
-    error,
-    result
-  ) {
+router.post("/settings/wh/(:id)", (req, res) => {
+  let name = req.body.name;
+  let shortname = req.body.shortname;
+  let id = req.params.id;
+  connection.query(queries.warehouseUpdate, [name, shortname, id], () => {
     res.redirect("/settings");
   });
 });
 
-router.get("/settings/wh/(:id)", function (req, res) {
-  var id = req.params.id;
+router.get("/settings/wh/(:id)", (req, res) => {
+  let id = req.params.id;
   connection.query(
     queries.warehouseDelete + queries.warehouseDeleteProducts,
     [id, id, id],
-    function (error, result) {
+    () => {
       res.redirect("/settings");
     }
   );
 });
 
-router.post("/settingswh", function (req, res) {
-  var name = req.body.name;
-  var shortname = req.body.shortname;
-  var post = {
+router.post("/settingswh", (req, res) => {
+  let name = req.body.name;
+  let shortname = req.body.shortname;
+  let post = {
     name,
     shortname,
   };
-  connection.query(queries.warehouseInsert, post, function (err) {
+  connection.query(queries.warehouseInsert, post, () => {
     res.redirect("/settings");
   });
 });

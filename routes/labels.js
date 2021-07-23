@@ -1,11 +1,11 @@
-var express = require("express");
-var isLoggedIn = require("./custom_modules/isLoggedIn.js");
-var connection = require("./custom_modules/connection.js");
-var queries = require("./custom_modules/queries.js");
-var router = express.Router();
+const express = require("express");
+const isLoggedIn = require("./custom_modules/isLoggedIn.js");
+const connection = require("./custom_modules/connection.js");
+const queries = require("./custom_modules/queries.js");
+const router = express.Router();
 	
-router.get('/createlabels', isLoggedIn, function(req, res){
-	connection.query(queries.stores + queries.userName, req.user.username, function(err, rows, fields){
+router.get('/createlabels', isLoggedIn, (req, res) => {
+	connection.query(queries.stores + queries.userName, req.user.username, (rows) => {
 		res.render('createlabels', {
 			user : req.user,
 			rows : rows[0],
@@ -14,8 +14,8 @@ router.get('/createlabels', isLoggedIn, function(req, res){
 	});
 });
 
-router.get('/scanlabels', isLoggedIn, function(req, res){
-	connection.query(queries.stores + queries.userName, req.user.username, function(err, rows, fields){
+router.get('/scanlabels', isLoggedIn, (req, res) => {
+	connection.query(queries.stores + queries.userName, req.user.username, (rows) => {
 		res.render('scanlabels', {
 			user : req.user,
 			rows : rows[0],
@@ -24,26 +24,26 @@ router.get('/scanlabels', isLoggedIn, function(req, res){
 	});
 });
 
-router.get('/printcustomlabels', isLoggedIn, function(req, res){
+router.get('/printcustomlabels', isLoggedIn, (req, res) => {
 	res.render('printcustomlabels', {
 		user : req.user,
 		layout: false
 	});	
 });
 
-router.get('/printscanlabels', isLoggedIn, function(req, res){
+router.get('/printscanlabels', isLoggedIn, (req, res) => {
 	res.render('printscanlabels', {
 		user : req.user,
 		layout: false
 	});	
 });
 
-router.post('/printcustomlabels', function(req, res){
-	var quantity = req.body.quantity;
-	var code = req.body.code;
-	var name = req.body.name;
-	var size = req.body.size;
-	var print_margin = req.body.print_margin;
+router.post('/printcustomlabels', (req, res) => {
+	let quantity = req.body.quantity;
+	let code = req.body.code;
+	let name = req.body.name;
+	let size = req.body.size;
+	let print_margin = req.body.print_margin;
 	res.render("printcustomlabels", {
 		quantity: quantity, 
 		code: code, 
@@ -54,13 +54,13 @@ router.post('/printcustomlabels', function(req, res){
 	});
 });
 
-router.post('/printscanlabels', function(req, res){
-	var quantity = req.body.quantity.map((i) => Number(i));
-	var code = req.body.code;
-	var colorCode = req.body.colorCode;
-	var color = req.body.color;
-	var name = req.body.name;
-	var size = req.body.size;
+router.post('/printscanlabels', (req, res) => {
+	let quantity = req.body.quantity.map((i) => Number(i));
+	let code = req.body.code;
+	let colorCode = req.body.colorCode;
+	let color = req.body.color;
+	let name = req.body.name;
+	let size = req.body.size;
 	res.render("printscanlabels", {
 		quantity: quantity, 
 		code: code,
@@ -72,8 +72,8 @@ router.post('/printscanlabels', function(req, res){
 	});
 });
 
-router.get('/shoelabels', isLoggedIn, function(req, res){
-	connection.query(queries.stores + queries.userName, req.user.username, function(err, rows, fields){
+router.get('/shoelabels', isLoggedIn, (req, res) => {
+	connection.query(queries.stores + queries.userName, req.user.username, (rows) => {
 		res.render('shoelabels', {
 			user : req.user,
 			rows : rows[0],
@@ -82,12 +82,12 @@ router.get('/shoelabels', isLoggedIn, function(req, res){
 	});
 });
 
-router.post('/printshoes', isLoggedIn, function(req, res){
-	var quantity = req.body.quantity;
-	var color = req.body.color;
-	var code = req.body.code;
-	var name = req.body.name;
-	var size = req.body.size;
+router.post('/printshoes', isLoggedIn, (req, res) => {
+	let quantity = req.body.quantity;
+	let color = req.body.color;
+	let code = req.body.code;
+	let name = req.body.name;
+	let size = req.body.size;
 	res.render("printshoes", {
 		quantity: quantity, 
 		color: color, 
