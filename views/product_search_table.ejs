@@ -1,0 +1,186 @@
+<%- include('partials/header.ejs'); %>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#thumbnail').typeahead({
+                name: 'search',
+                remote: 'http://localhost:3000/product_search_table?key=%QUERY',
+                limit: 1
+            });
+        });    
+    </script>
+
+    <h1>Inventory Results</h1>
+    <div class="ui top attached tabular menu">
+        <a class="active item" data-tab="first">Inventory</a>
+        <a class="item" data-tab="second">Photos</a>
+    </div>
+    <div class="ui bottom attached active tab segment" data-tab="first">
+        <% if(obj2.length>0){ %>
+            <h3>
+                <%= obj2.length %> Products Found
+            </h3>
+            <table class="ui celled collapsing striped table" id="data">
+                <thead>
+                    <th><a style="color: black; text-decoration: none;" href="#" onclick="sortTable(0)">Store <i class="caret
+                        down icon"></i></a></th>
+                    <th><a style="color: black; text-decoration: none;" href="#" onclick="sortTable(1)">SKU <i class="caret
+                        down icon"></i></a></th>
+                    <th>Qt.</th>
+                    <th>Variant</th>
+                    <th>Warehouse </th>
+                </thead>
+                <tbody>
+                    <% for (var i=0; i < obj2.length; i++){ %>
+                        <tr>
+                            <td>
+                                <%= obj2[i].abbrev %>
+                            </td>
+                            <td>
+                                <%= obj2[i].sku %>
+                            </td>
+                            <td>
+                                <div class="ui input"><input type="number" id="<%= obj2[i].var_id %>"
+                                        value="<%= obj2[i].inv %>" min="0" max="1000"><input type="hidden"
+                                        id="<%= obj2[i].storeid %>" value="<%= obj2[i].storeid %>"><button
+                                        class="ui button"
+                                        onclick="submitInventory(<%= obj2[i].var_id %>, <%= obj2[i].storeid %>)">Save</button>
+                                </div>
+                            </td>
+                            <td>
+                                <%= obj2[i].title %>
+                            </td>
+                            <td>
+                                <%= obj2[i].shortname %>
+                            </td>
+                        </tr>
+                        <% }; %>
+                </tbody>
+            </table>
+            <% }else{ %>
+                <strong>Sorry, unable to find any products matching your search.</strong>
+                <% }; %>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="second">
+        <% if(obj.length>0){ %>
+
+            <h3>
+                <%= obj.length %> Products Found
+            </h3>
+            <table cellspacing="0" cellpadding="0" border="0" width="100%" class="ui celled padded table product-table">
+                <thead>
+                    <tr>
+                        <th class="table-header-repeat" width="100">Image</th>
+                        <th class="table-header-repeat line-left" width="100">Code</th>
+                        <th class="table-header-repeat line-left">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <% var x=0;%>
+                        <% for (var i=0; i < obj.length; i++){ x++; %>
+                            <tr <% if (x % 2) { %> class="alt-row" <% } %>>
+                                    <td>
+                                        <a href="/product_view/<%= obj[i].prd_id %>"><img loading="lazy" alt="image"
+                                                name="search" src="/img/<%= obj[i].pim_id %>-L.jpg" width="75"
+                                                height="100" /></a>
+                                    </td>
+                                    <td>
+                                        <a href="/product_view/<%= obj[i].prd_id %>">
+                                            <%= obj[i].prd_code %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <%= obj[i].prd_name %>
+                                    </td>
+                            </tr>
+                            <% } %>
+                </tbody>
+            </table>
+            <% }else{ %>
+                <strong>Sorry, unable to find any products matching your search.</strong><br>
+                <p>When searching for photos, try just using the sku of the product without any variant suffix. (ie.
+                    K208)</p>
+                <% }; %>
+    </div>
+
+    <script>
+        function submitInventory(var_id, store_id) {
+            event.preventDefault();
+
+            $.ajax({
+                global: false,
+                type: 'POST',
+                url: "/inventorychange/" + var_id,
+                data: {
+                    var_id: var_id,
+                    inv: $("#" + var_id).val(),
+                    storeid: $("#" + store_id).val()
+                },
+                success: function (result) {
+                    // console.log("Posted");
+                },
+                error: function (data, request, status, error) {
+                    // console.log("Failed");
+                    serviceError();
+                }
+            });
+        };
+        $('.menu .item')
+            .tab()
+            ;
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("data");
+            switching = true;
+            // Set the sorting direction to ascending:
+            dir = "asc";
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /* Loop through all table rows (except the
+                first, which contains table headers): */
+                for (i = 1; i < (rows.length - 1); i++) {
+                    // Start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /* Get the two elements you want to compare,
+                    one from current row and one from the next: */
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /* Check if the two rows should switch place,
+                    based on the direction, asc or desc: */
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            // If so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            // If so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch
+                    and mark that a switch has been done: */
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /* If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again. */
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+    <%- include('partials/footer.ejs'); %>

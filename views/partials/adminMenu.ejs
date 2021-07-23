@@ -1,0 +1,53 @@
+<div class="ui vertical left menu overlay visible"
+    style="-webkit-transition-duration: 0.1s; overflow: visible !important;">
+    <div class="ui accordion">
+        <div class="content">
+            <a class="title item header" href="../home">Home</a>
+        </div>
+        <a class="title item header">Order Printer <i class="dropdown icon"></i></a>
+        <div class="content">
+            <% rows.forEach(function(row){ %>
+            <%- include('dynamnav.ejs', {row: row}); %>
+            <% }); %>
+            <a class="item" href="../shippingLabels" target="_blank">Shipping Labels</a>
+        </div>
+        <a class="title item header">Labels <i class="dropdown icon"></i></a>
+        <div class="content">
+            <a class="item" href="../createlabels">Create Product Labels</a>
+            <a class="item" href="../shoelabels">Create Shoe Labels</a>
+            <a class="item" href="../scanlabels">Create Scan Labels</a>
+        </div>
+        <a class="title item header">Products <i class="dropdown icon"></i></a>
+        <div class="content">
+            <a class="item" href="../productsearch">Search For A Product</a>
+            <a class="item" href="../codes">Tax & Harm Codes</a>
+            <a class="item" href="../altered">Altered Products List</a>
+            <a class="item" href="../ukSuggests">UK Inventory Suggestions</a>
+            <a class="item" href="../upload">Legacy UK Inventory Suggestions</a>
+            <a class="item" href="../orderscanner">Order Scanner</a>
+        </div>
+        <a class="title item header">Customers <i class="dropdown icon"></i></a>
+        <div class="content">
+            <a class="item" href="../customersearch">Search For A Customer</a>
+        </div>
+        <a class="title item header">Manufacturing <i class="dropdown icon"></i></a>
+        <div class="content">
+            <a class="item" href="../bills">Current Bills Of Material</a>
+            <a class="item" href="../rawGoodsList">Raw Goods</a>
+            <a class="item" href="../billOfMaterials">Create Bill Of Materials</a>
+            <a class="item" href="../rawGoods">Add Raw Goods</a>
+            <a class="item" href="../vendors">Add A Vendor</a>
+        </div>
+        <a class="title item header">Admin Portal <i class="dropdown icon"></i></a>
+        <div class="content">
+            <a class="item" href="../settings">Settings</a>
+            <a class="item" href="../users">Users</a>
+            <a class="item" href="../createuser">Create User</a>
+            <a class="item" href="../sales">Sales</a>
+        </div>
+        <a class="title item header">Employee Portal <i class="dropdown icon"></i></a>
+        <div class="content">
+            <a class="item" href="../profile">User Profile</a>
+        </div>
+    </div>
+</div>

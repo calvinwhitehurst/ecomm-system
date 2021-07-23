@@ -1,0 +1,31 @@
+<%- include('partials/header.ejs'); %>
+<h1>Users</h1>
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Avatar</th>
+      <th>Permissions Level</th>
+      <th>Last Login</th>
+      <th>Edit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(var i = 0; i < rows.length; i++){ %>
+    <tr>
+      <td><%= rows[i].username %></td>
+      <td><img class="ui mini rounded image" src="/img/<%= rows[i].picture %>"></td>
+      <% if(rows[i].roles == 1) { %>
+      <td>Employee</td>
+      <% } else if (rows[i].roles == 2) { %>
+      <td>Administrator</td>
+      <% } else { %>
+      <td>Vendor</td>
+      <% } %>
+      <td><%= rows[i].lastLogin %></td>
+      <td><a href="/users/<%= rows[i].id %>">Delete</a></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<%- include('partials/footer.ejs'); %>

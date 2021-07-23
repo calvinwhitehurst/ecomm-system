@@ -1,0 +1,18 @@
+<%- include('partials/header.ejs'); %>
+
+<div id="content-inner">
+    <div class="page-content">
+
+        <h3>Current Images</h3>
+        <div class="wrapper">
+            <% for (var i = 0; i < rows2.length; i++) { %>
+            <div class="img-container">
+                <img loading="lazy" alt="Image" src="/img/<%= rows2[i].pim_id %>-L.jpg" width="150" height="200">
+                <a href="/img/<%= rows2[i].pim_id %>-L.jpg" target="_image">Full Size</a>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer.ejs'); %>

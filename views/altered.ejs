@@ -1,0 +1,54 @@
+<%- include('partials/header.ejs'); %>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.ui.search.codes').search({
+            apiSettings: {
+                url: '../addAltered?q=%{query}'
+            },
+            maxResults: 10,
+            showNoResults: false
+        });
+    }); 
+    $(document).on("click keypress", ".result", function (e) {
+        if (e.which == 13 || e.type == "click") {
+            $("#add_altered_name").val($(this).find("div:last").text());
+        }
+    });   
+</script>
+<h1>Altered Products</h1>
+<h3>Add a product to list to be notified when there is a product that needs to be altered.</h3>
+<table class="ui single line table">
+    <thead>
+      <tr>
+        <th>Sku</th>
+        <th>Name</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i = 0;i < rows2.length;i++){ %>
+        <tr>
+          <td><%= rows2[i].sku %></td>
+          <td><%= rows2[i].title %></td>
+          <td><a href="/altered/<%= rows2[i].id %>">Delete</a></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+<h2>Add A Product To Be Altered</h2>
+  <form method="post" action="/addAltered" id="search">
+    <div class='ui input search codes'>
+      <div>
+          <input type="text" id="add_altered_sku" style="width: 100px;text-transform: uppercase;" name="sku[]" value="" class="prompt" placeholder="sku" />
+      </div>
+      <div class="results"></div>
+    </div>
+    <div class='ui input'>
+      <input type="text" id="add_altered_name" style="width: 400px;" placeholder="name" name="name[]" value="" />
+    </div>
+  <input type="submit" class="add_altered ui button" value="Submit" />
+  <h4 style="margin-left: 1px;"></h4>
+  <br />
+</form>
+
+<%- include('partials/footer.ejs'); %>

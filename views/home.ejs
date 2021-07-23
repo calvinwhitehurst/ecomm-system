@@ -1,0 +1,349 @@
+<%- include('partials/header.ejs'); %> <% if (typeof message != 'undefined') { %>
+<div><%= message %></div>
+<% } %>
+<% if (typeof data == 'undefined'||profile.roles == 0) { %>
+<h1>First time here?</h1>
+<h3>
+    You will need to link up a Shopify store before you will be able to access the
+    full capabilities of this application.
+</h3>
+<p>Click <a href="../settings">here</a> to get started.</p>
+<img src="../gif/moving_right_along.gif">
+<% } else { %>
+<h1>Welcome back!</h1>
+<h3>Here are some recent sales figures.</h3>
+<div class="ui form">
+  <form method="post" action="/home/dates" id="dates">
+    <div class="three fields">
+      <div class="field">
+        <label>Start date</label>
+        <div class="ui calendar" id="rangestart">
+          <div class="ui input left icon">
+            <i class="calendar icon"></i>
+            <input type="text" placeholder="Start" value="" name="start_date">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>End date</label>
+        <div class="ui calendar" id="rangeend">
+          <div class="ui input left icon">
+            <i class="calendar icon"></i>
+            <input type="text" placeholder="End" value="" name="end_date">
+          </div>
+        </div>
+      </div>
+        <button class="ui button" type="submit" id="calendar-submit" >Submit</button>
+    </div>
+  </form>
+</div>
+<h2>Total Sales: $<%= salesTotal %></h2>
+<div id="my_dataviz"></div>
+<div class="ui three stackable cards">
+  <div class="ui card">
+    <div class="content">
+      <div class="header">Unfulfilled Orders</div>
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr>
+            <th>Store</th>
+            <th>Orders</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i < rows5.length; i++){ %>
+          <tr>
+            <td>
+              <h2 class="ui center aligned header"><%= rows5[i].name %></h2>
+            </td>
+            <td>
+              <h2 class="ui center aligned header"><%= rows5[i].total %></h2>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ui card">
+    <div class="content">
+      <div class="header">Orders To Combine</div>
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Order</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i < rows6.length; i++){ %>
+          <tr>
+            <td>
+              <%= rows6[i].customer %>
+            </td>
+            <td>
+                <%= rows6[i].order_id %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ui card">
+    <div class="content">
+      <div class="header">Items That Need To Be Altered</div>
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr>
+            <th>Sku</th>
+            <th>Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i < rows7.length; i++){ %>
+          <tr>
+            <td>
+              <%= rows7[i].sku %>
+            </td>
+            <td>
+                <%= rows7[i].amount %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ui card">
+    <div class="content">
+      <div class="header">All Time Bestsellers</div>
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr>
+            <th>Sku</th>
+            <th>Title</th>
+            <th>Sold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i < rows4.length; i++){ %>
+          <tr>
+            <td>
+              <%= rows4[i].sku %>
+            </td>
+            <td>
+              <h4 class="ui header">
+                <%= rows4[i].title %> - <%= rows4[i].variant %>
+              </h4>
+            </td>
+            <td>
+              <%= rows4[i].amount %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ui card">
+    <div class="content">
+      <div class="header"><%= dates[0].date %> - <%= dates[1].date %> Bestsellers</div>
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr>
+            <th>Sku</th>
+            <th>Title</th>
+            <th>Sold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i = 0; i < rows3.length; i++){ %>
+          <tr>
+            <td>
+              <%= rows3[i].sku %>
+            </td>
+            <td>
+              <h4 class="ui header">
+                <%= rows3[i].title %> - <%= rows3[i].variant %>
+              </h4>
+            </td>
+            <td>
+              <%= rows3[i].amount %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<% } %>
+<script type="text/javascript">
+    
+    var margin = {top: 60, right: 160, bottom: 35, left: 30};
+    
+    var width = 1660 - margin.left - margin.right,
+        height = 700 - margin.top - margin.bottom;
+    var heightValue = height + margin.top + margin.bottom,
+	widthValue = width + margin.left + margin.right
+    var svg = d3.select("#my_dataviz")
+      .append("svg")
+      .attr("viewBox", `0 0 ${widthValue} ${heightValue}`)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    var data = '<%-JSON.stringify(data)%>';
+    var stores = '<%-JSON.stringify(stores)%>';
+    data = JSON.parse(data);
+    stores = JSON.parse(stores);
+    
+    // Transpose the data into layers
+    var dataset = d3.layout.stack()(stores.map(function(store) {
+      return data.map(function(d) {
+        return {x: d.sales_date, y: +d[store]};
+      });
+    }));
+
+    var dailyTotal = d3.nest()
+      .key(function(d){return d.sales_date})
+      .rollup(function(leaves){
+        return d3.sum(leaves, function(d) {return d3.sum(d3.values(d))});
+      })
+      .entries(data);
+    
+    // Set x, y and colors
+    var x = d3.scale.ordinal()
+      .domain(dataset[0].map(function(d) { return d.x; }))
+      .rangeRoundBands([10, width-10], 0.15);
+    
+    var y = d3.scale.linear()
+      .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
+      .range([height, 0]);
+
+    function colorGen(array) {
+      let hastag = [];
+      var letters = '0123456789abcdef';
+      for(let i = 0;i < array.length; i++){
+        hastag.push('#');
+          for (let k=0;k<6;k++){
+          hastag[i]+=letters[Math.floor(Math.random() *16)];
+          }
+      }
+      return hastag;
+    }
+
+    var colors = colorGen(stores);
+    
+    // Define and draw axes
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(11)
+      .tickSize(-width, 0, 0)
+      .tickFormat( function(d) { return "$" + d } );
+    
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+    
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+    
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+    
+    // Create groups for each series, rects for each segment 
+    var groups = svg.selectAll("g.cost")
+      .data(dataset)
+      .enter().append("g")
+      .attr("class", "cost")
+      .style("fill", function(d, i) { return colors[i]; });
+    
+    var rect = groups.selectAll("rect")
+      .data(function(d) { return d; })
+      .enter()
+      .append("rect")
+      .attr("x", function(d) { return x(d.x); })
+      .attr("y", function(d) { return y(d.y0 + d.y); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
+      .attr("width", x.rangeBand())
+      .on("mouseover", function() { tooltip.style("display", null); })
+      .on("mouseout", function() { tooltip.style("display", "none"); })
+      .on("mousemove", function(d) {
+        var xPosition = d3.mouse(this)[0] - 15;
+        var yPosition = d3.mouse(this)[1] - 25;
+        tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+        tooltip.select("text").text("$" + d3.format(",.2f")(d.y));
+      });
+    
+    columns = svg.append("g")
+      .selectAll("text").data(dailyTotal)
+      .enter().append("text")
+      .attr("x", function(d){
+        return x(d.key) + x.rangeBand()/2
+      })
+      .attr("y", function(d) {
+        return y(d.values);
+      })
+      .attr("dy", "-1em")
+      .attr('style', 'font-size:10px')
+      .text( function (d){
+        return "$" + d3.format(",.2f")(d.values);
+      })
+      .style({fill: 'black', "text-anchor": "middle"});
+
+    // Draw legend
+    var legend = svg.selectAll(".legend")
+      .data(colors)
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
+     
+    legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", function(d, i) {return colors.slice()[i];});
+     
+    legend.append("text")
+      .attr("x", width + 5)
+      .attr("y",9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "start")
+      .text(function(d, i) { 
+        switch (i) {
+          case i: return stores[i];
+        }
+      });
+    
+    // Prep the tooltip bits, initial display is hidden
+    var tooltip = svg.append("g")
+      .attr("class", "tooltip")
+      .style("display", "none");
+        
+    tooltip.append("rect")
+      .attr("width", 60)
+      .attr("height", 20)
+      .attr("fill", "white")
+      .style("stroke", "black");
+    
+    tooltip.append("text")
+      .attr("x", 30)
+      .attr("dy", "1.2em")
+      .style("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .attr("font-weight", "bold");
+    $('#rangestart').calendar({
+      type: 'date',
+      endCalendar: $('#rangeend')
+    });
+    $('#rangeend').calendar({
+      type: 'date',
+      startCalendar: $('#rangestart')
+    });
+    </script>
+<%- include('partials/footer.ejs'); %>

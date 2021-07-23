@@ -1,0 +1,35 @@
+<%- include('partials/header.ejs'); %>
+<script type="text/javascript">
+    $(function () {
+        $('.ui.search.prod').search({
+            apiSettings: {
+                url: '../search?q=%{query}'
+            },
+            maxResults: 10,
+            showNoResults: false
+        });
+    });
+</script>
+<div id="content-outer">
+    <div id="content">
+        <h1>Products</h1>
+        <div id="content-inner">
+            <div class="page-content">
+                <h3>Enter product code or partial code below.</h3>
+                <br />
+                <form method="post" action="/search" id="search">
+                    <div class='ui input search prod'>
+                        <div class="ui icon massive input">
+                            <input type="text" class="prompt" name="search" value="" placeholder="Search..." required />
+                            <i class="search icon"></i>
+                        </div>
+                        <div class="results"></div>
+                    </div>
+                    <input type="submit" value="Search" class="ui button">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<%- include('partials/footer.ejs'); %>

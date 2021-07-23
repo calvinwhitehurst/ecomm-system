@@ -1,0 +1,202 @@
+<%- include('partials/header.ejs'); %>
+<script type="text/javascript">
+  var set_message = function () {
+    var container = $("#message_container");
+    $(container)
+      .show()
+      .animate({ right: "10%" }, "slow")
+      .delay(2000)
+      .fadeOut("slow", function () {
+        $("#message_container")
+          .removeAttr("style")
+          .hide();
+      });
+  };
+
+  var set_neg_message = function () {
+    var container = $("#neg_message_container");
+    $(container)
+      .show()
+      .animate({ right: "10%" }, "slow")
+      .delay(2000)
+      .fadeOut("slow", function () {
+        $("#neg_message_container")
+          .removeAttr("style")
+          .hide();
+      });
+  };
+
+  $("#app2").submit(function (event) {
+    event.preventDefault(); //prevent default action
+    var url = $(this).attr("action"); //get form action url
+    var request_method = $(this).attr("method"); //get form GET/POST method
+    var form_data = new FormData(this); //Encode form elements for submission
+    $.ajax({
+      url: url,
+      dataType: "json",
+      cache: false,
+      type: "post",
+      data: form_data,
+      error: function () {
+        set_neg_message();
+      },
+      success: function () {
+        set_message();
+      }
+    });
+  });
+</script>
+<div id="message_container" class="ui floating positive message" style="display: none">
+  <p>Codes updated successfully</p>
+</div>
+<div id="neg_message_container" class="ui floating negative message" style="display: none">
+  <p>An error occurred.</p>
+</div>
+<h1>Tax & Harmonization Codes</h1>
+<div class="ui pointing secondary demo menu">
+  <a class="active blue item" data-tab="first">Tax Codes</a>
+  <a class="blue item" data-tab="second">Harmonization Codes</a>
+</div>
+<div class="ui active tab segment" data-tab="first">
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th>Product Criteria</th>
+        <th>Tax Code</th>
+        <th>Explanation</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% var taxes = obj; %> <% for (var i = 0; i < taxes.length; i++){ %>
+      <tr>
+        <td><%= taxes[i].product %></td>
+        <td>
+          <div class="ui action input">
+            <input type="text" class="copyInput" value="<%= taxes[i].tax_code %>" />
+            <button type="button" name="copyToken" value="copy" class="copyToken ui right icon button">
+              <i class="clipboard icon"></i>
+            </button>
+          </div>
+        </td>
+        <td><%= taxes[i].tax_description %></td>
+        <td><a href="/taxCodes/<%= taxes[i].tax_id %>">Delete</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <h3>Add A Task Code</h3>
+  <form action="/taxCodes" method="post" id="app1">
+    <div class="ui form">
+      <div class="fields">
+        <div class="field">
+          <label>Code Description</label>
+          <input type="text" placeholder="Some Product" name="product" />
+        </div>
+        <div class="field">
+          <label>Tax Code</label>
+          <input type="text" placeholder="PC000000" name="tax_code" />
+        </div>
+        <div class="field">
+          <label>Explanation</label>
+          <input type="text" placeholder="This tax code includes products..." name="tax_description" />
+        </div>
+      </div>
+    </div>
+    <button class="ui button" type="submit" form="app1">Save Tax Codes</button>
+  </form>
+</div>
+<div class="ui tab segment" data-tab="second">
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th>Product Criteria</th>
+        <th>Harmonization Code</th>
+        <th>Explanation</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% var harms = obj2; %> <% for (var i = 0; i < harms.length; i++){ %>
+      <tr>
+        <td><%= harms[i].product %></td>
+        <td>
+          <div class="ui action input">
+            <input type="text" class="copyInput" value="<%= harms[i].harm_code %>" />
+            <button type="button" name="copyToken" value="copy" class="copyToken ui right icon button">
+              <i class="clipboard icon"></i>
+            </button>
+          </div>
+        </td>
+        <td><%= harms[i].harm_description %></td>
+        <td><a href="/harmCodes/<%= harms[i].harm_id %>">Delete</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <h3>Add A Harmonization Code</h3>
+  <form action="/harmCodes" method="post" id="app2">
+    <div class="ui form">
+      <div class="fields">
+        <div class="field">
+          <label>Code Description</label>
+          <input type="text" placeholder="Some Product" name="product" />
+        </div>
+        <div class="field">
+          <label>Our Sku</label>
+          <input type="text" placeholder="000000" name="harm_code" />
+        </div>
+        <div class="field">
+          <label>Explanation</label>
+          <input type="text" placeholder="pants, shorts, etc." name="harm_description" />
+        </div>
+      </div>
+    </div>
+    <button class="ui button" type="submit" form="app2">
+      Save Harmonization Code
+    </button>
+  </form>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".demo.menu .item").tab({ history: false });
+  });
+
+  var popupTimer;
+
+  function delayPopup(popup) {
+    popupTimer = setTimeout(function () {
+      $(popup).popup("hide");
+    }, 4200);
+  }
+
+  $(document).ready(function () {
+    $(".copyToken").click(function () {
+      clearTimeout(popupTimer);
+
+      var $input = $(this)
+        .closest("div")
+        .find(".copyInput");
+
+      /* Select the text field */
+      $input.select();
+
+      /* Copy the text inside the text field */
+      document.execCommand("copy");
+
+      $(this)
+        .popup({
+          title: "Copied!",
+          on: "manual",
+          exclusive: true
+        })
+        .popup("show");
+
+      // Hide popup after 5 seconds
+      delayPopup(this);
+    });
+  });
+</script>
+
+<%- include('partials/footer.ejs'); %>

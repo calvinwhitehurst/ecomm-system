@@ -1,0 +1,123 @@
+<html>
+
+<head>
+    <title>Label Printer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.min.js"></script>
+    <style type="text/css">
+        @page {
+            size: letter
+        }
+
+        td {
+            width: 2in;
+            height: 1in;
+            margin: 0;
+            vertical-align: top;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            padding-top: 0.06in;
+            padding-bottom: 0.05in;
+            padding-left: 0.11in;
+            padding-right: 0.11in;
+            overflow: hidden;
+            text-align: left;
+            display: inline-block;
+        }
+
+        #sku {
+            font-size: 0.5vw;
+        }
+
+        #name {
+            font-size: 0.4vw;
+        }
+
+        .sheet {
+            padding-top: 0.5in;
+            padding-left: 0.25in;
+        }
+
+        .seperator {
+            text-align: center;
+        }
+
+        @media print {
+            header {
+                display: none!important;
+            }
+
+            #sku {
+                font-size: 1.5vw;
+            }
+
+            #name {
+                font-size: 1vw;
+            }
+        } 
+
+        .print {
+            cursor: pointer;
+            color: #000000;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/jsbarcode/3.6.0/barcodes/JsBarcode.code128.min.js"></script>
+</head>
+<header>
+    <div class="ui top attached tabular menu">
+        <div class="item"><a class="print" onclick="window.print();">Print <i class="print icon"></i></a></div>
+    </div>
+</header>
+<body class="letter">
+    <section class="sheet">
+        <article>
+            <table>
+                <tr>
+                    <% var x=0; %>
+                    <% var total = quantity.reduce((a,b) => {return a + b}, 0); %>
+                        <% for (var i=0; i < name.length; i++) { %>
+                            <% for (var y=0; y < quantity[i]; y++) { x++; %>
+                                <td class="seperator">
+                                    <div style="text-transform: uppercase; margin: 0;" id="sku">
+                                        <%= code[i].toUpperCase() %>-<%= colorCode[i].toUpperCase() %>-<%=size[i].toUpperCase() %> / <%= color[i] %>
+                                    </div>
+                                    <div>
+                                        <svg id="barcode<%= [i] %>-<%= [y] %>"></svg>
+                                        <script type="text/javascript">JsBarcode("#barcode<%= [i] %>-<%= [y] %>", "<%= code[i].toUpperCase() %>-<%= colorCode[i].toUpperCase() %>-<%= size[i].toUpperCase() %>", {
+                                                width: 0.75,
+                                                height: 25,
+                                                fontSize: 12, 
+                                                displayValue: false
+                                            });
+                                        </script>
+                                    </div>
+                                    <div id="name">
+                                        <%= name[i] %>
+                                    </div>
+                                </td>
+                                <% if ((x % 4) == 0 && (x % 40) != 0) { %>
+                                    </tr>
+                                    <tr>
+                                <% } else if (!(x % 40) && x != total) { console.log(total); %>
+                                </tr>
+                            </table>
+                        </article>
+                    </section>
+                    <section class="sheet">
+                        <article>
+                            <table>
+                                <tr>
+                            <% } %>
+                        <% }; %>
+                    <% }; %>
+                </tr>
+            </table>
+        </article>
+    </section> 
+</body>
+
+</html>

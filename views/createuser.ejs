@@ -1,0 +1,30 @@
+<%- include('partials/header.ejs'); %>
+<h1>Create User</h1>
+<form action="/createuser" method="post">
+    <div class="ui form">
+        <div class="fields">
+            <div class="field">
+                <label>User Name</label>
+                <input type="text" name="username">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" name="password">
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email">
+            </div>
+            <div class="field">
+                <label>Permission Level</label>
+                <select name="roles">
+                    <option value="2">Adminstrator</option>
+                    <option value="1">Employee</option>
+                    <option value="0">Vendor</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="ui submit button">Submit</button>
+    </div>
+</form>
+<%- include('partials/footer.ejs'); %>

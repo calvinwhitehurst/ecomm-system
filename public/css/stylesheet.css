@@ -1,0 +1,181 @@
+.container {
+  margin-top: 100px;
+  margin-left: 18rem;
+  padding-right: 15%;
+  padding-bottom: 75px;
+}
+#message {
+  margin: 0 auto;
+  width: 20%;
+  position: absolute;
+  z-index: 1;
+}
+#muppet_container {
+  text-align: center;
+}
+#muppet_container.h1, #muppet_container.img {
+  margin: 20px auto 30px auto;
+}
+.ui.vertical.menu {
+  float: left;
+  margin-left: 15px;
+}
+.wrapper {
+  display: grid;
+  grid-template-columns: 200px 200px 200px 200px;
+}
+
+.img-container {
+  text-align: center;
+  padding: 20px;
+}
+
+body {
+  padding: 1em;
+}
+
+.ui.action.input input[type="file"] {
+  display: none;
+}
+
+.ui.modal {
+  margin-top: 0 !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.marginlefting {
+  margin-left: 60px !important;
+}
+
+.displaynone {
+  display: none !important;
+}
+
+.displayblock {
+  display: block !important;
+}
+
+.sidebar .item i {
+  font-size: 24px;
+  margin-top: -5px !important;
+}
+
+.logo {
+  height: 48px !important;
+  padding: 10px !important;
+}
+
+.logo img {
+  width: 100% !important;
+  height: 38px !important;
+}
+
+.title.item {
+  padding: 0.92857143em 1.14285714em !important;
+}
+
+.dropdown .menu .header {
+  padding-top: 3.9px !important;
+  padding-bottom: 3.9px !important;
+}
+
+/* Semantic UI modal position fix */
+.ui.page.modals.dimmer.transition.visible.active {
+  display: flex !important;
+}
+
+/* custom global classes */
+div [class*="left floated"] {
+  float: left;
+  margin-left: 0.25em;
+}
+
+div [class*="right floated"] {
+  float: right;
+  margin-right: 0.25em;
+}
+
+div [class*="inline"] {
+  display: inline-block !important;
+}
+
+div.ui.floating.positive.message, div.ui.floating.negative.message {
+  position: absolute;
+  bottom: 20%;
+  right: 0px;
+  /* z-index: 100; */
+}
+
+.ui.search.codes .prompt {
+  border-radius: 0.28571429rem !important;
+  height: 37.8px;
+  padding: 9.5px 14px;
+  position: relative;
+  font-weight: 400;
+  font-style: normal;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  color: rgba(0, 0, 0, 0.87);
+  margin: 0;
+  -webkit-box-flex: 1;
+  flex: 1 0 auto;
+  outline: 0;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  text-align: left;
+  line-height: 1.21428571em;
+  font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+  padding: 0.67857143em 1em;
+  background: #fff;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+}
+
+svg {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+}
+
+path.domain {
+  stroke: none;
+}
+
+.y .tick line {
+  stroke: #ddd;
+}
+
+#calendar-submit {
+  margin-top: 23px;
+}
+
+/* .tt-dropdown-menu {
+	border: solid 1px rgb(112, 112, 112);
+	width: 300px;
+	font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+} */
+
+/* #products_div{
+	position: relative;
+	top: 0;
+	margin: -.5em 0;
+	width: 100%;
+	font-size: 1.71428571em;
+	font-weight: 400;
+	font-style: normal;
+	display: inline-flex;
+	color: rgba(0,0,0,.87);
+	font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+}
+
+#products_search {
+	font-size: 1em;
+	padding-top: .571422857em;
+	padding-bottom: .57142857em;
+} */
+

@@ -1,0 +1,153 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Create Product Labels</h1>
+<script type="text/javascript">
+    function misc_customlabels_add() {
+        var code = $("#misc_customlabels_code").val();
+        var name = $("#misc_customlabels_name").val();
+        var size = $("#misc_customlabels_size").val();
+        var color = $("#misc_customlabels_color").val();
+        var colorCode = $("#misc_customlabels_colorCode").val();
+        if (code.length == 0) {
+            $.alertsAdd({
+                text: "Please enter product code",
+                stay: true,
+                type: 'attention'
+            });
+            return;
+        }
+        if (color.length == 0) {
+            $.alertsAdd({
+                text: "Please enter product color",
+                stay: true,
+                type: 'attention'
+            });
+            return;
+        }
+        if (colorCode.length == 0) {
+            $.alertsAdd({
+                text: "Please enter product color code",
+                stay: true,
+                type: 'attention'
+            });
+            return;
+        }
+        $("#misc_customlabels table").append("<tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" + code + "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" + color + "'/></div></td><td><div class='ui input'><input type='text' name='colorCode[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" + colorCode + "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" + name + "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='" + size + "'/></div></td><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr>");
+        $(".misc_customlabels_print").hide();
+        $("#misc_customlabels h4").html('');
+        $("#misc_customlabels").show();
+    }
+    // function misc_customlabels_code() {
+    //     global_ajax('/central/misc/customlabels', {
+    //         action: "code",
+    //         code: $("#misc_customlabels_code").val()
+    //     }, function (data) {
+    //         if (data.name) {
+    //             $("#misc_customlabels_name").val(data.name);
+    //         } else {
+    //             $("#misc_customlabels_name").val('');
+    //         }
+    //     });
+
+    // }
+    function misc_customlabels_remove(e) {
+        $(e).closest('tr').remove();
+        if ($("#misc_customlabels table tr").children().length == 0) {
+            $("#misc_customlabels").hide();
+            $(".misc_customlabels_print").hide();
+            $("#misc_customlabels h4").html('');
+        } else {
+            misc_customlabels_status();
+        }
+    }
+    function misc_customlabels_status() {
+        var labels = 0;
+        $(".misc_customlabels_quantitites").each(function () {
+            labels += parseInt($(this).val());
+        });
+
+        var sheets = Math.ceil(labels / 40);
+        if (sheets > 0) {
+            $("#misc_customlabels h4").html(sheets + " sheet(s) required for " + labels + " labels");
+            $(".misc_customlabels_print").show();
+        } else {
+            $(".misc_customlabels_print").hide();
+        }
+    }
+    $(function () {
+        $('.ui.search.codes').search({
+            apiSettings: {
+                url: '../searchcodes?q=%{query}'
+            },
+            maxResults: 10,
+            showNoResults: false
+        });
+    });
+    $(document).on("click keypress", ".result", function (e) {
+        if (e.which == 13 || e.type == "click") {
+            $("#misc_customlabels_name").val($(this).find("div:last").text());
+        }
+    });
+</script>
+
+
+<h3>Enter product code and select size</h3>
+<table border="0" cellpadding="5" cellspacing="5">
+    <tr>
+        <td>
+            <form method="post" action="/searchcodes" id="search">
+                <div class='ui input search codes'>
+                    <div>
+                        <input type="text" id="misc_customlabels_code" style="width: 100px;text-transform: uppercase;"
+                            name="search" value="" class="prompt" placeholder="sku" />
+                    </div>
+                    <div class="results"></div>
+                </div>
+                <div class='ui input'>
+                    <input type="text" id="misc_customlabels_color" style="width: 400px;" placeholder="color name"
+                        value="" maxlength="9">
+                </div>
+                <div class='ui input'>
+                    <input type="text" id="misc_customlabels_colorCode" style="width: 100px;" placeholder="color code"
+                        value="" maxlength="2">
+                </div>
+                <div class='ui input'>
+                    <input type="text" id="misc_customlabels_name" style="width: 400px;" placeholder="name (optional)"
+                        value="">
+                </div>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+
+            <select class="ui dropdown" id="misc_customlabels_size" style="width: 200px;">
+                <option value="XS">Extra Small</option>
+                <option value="S">Small</option>
+                <option value="M">Medium</option>
+                <option value="L">Large</option>
+                <option value="XL">Extra Large</option>
+                <option value="2X">2X Large</option>
+                <option value="3X">3X Large</option>
+                <option value="OS">One Size</option>
+                <option value="S/M">Small / Medium</option>
+                <option value="M/L">Medium / Large</option>
+                <option value="L/XL">Large / XL</option>
+            </select>
+
+            <input type="button" value="Add" class="ui button" onclick="misc_customlabels_add();" />
+        </td>
+    </tr>
+</table>
+<br />
+<form method="post" action="/printscanlabels" target="_blank" id="misc_customlabels" style="display:none;">
+    <h3>Label Maker Queue</h3>
+    <table cellpadding="5" cellspacing="5" border="0">
+    </table>
+    <br />
+    <input type="submit" class="misc_customlabels_print ui button" value="Print Labels" style="display:none;" />
+    <br /><br />
+    <h4 style="margin-left: 1px;"></h4>
+    <br />
+</form>
+<%- include('partials/footer.ejs'); %>

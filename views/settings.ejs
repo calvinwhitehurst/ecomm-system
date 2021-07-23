@@ -1,0 +1,349 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Settings</h1>
+<div class="ui top attached tabular menu">
+  <a class="active item" data-tab="first">Store Integrations</a>
+  <a class="item" data-tab="second">Warehouses</a>
+  <a class="item" data-tab="third">Compared Stores</a>
+</div>
+<div class="ui bottom attached active tab segment" data-tab="first">
+  <% if (rows4.length == 0){ %>
+  <p style="display: inline-block;"> No warehouses have been created. Please select the "Warehouses" tab and create a
+    new
+    warehouse.</p>
+  <img src="../gif/no_warehouses.gif">
+  <% } else { %>
+  <h3 style="display: inline-block;">Link A Store</h3><a style="display: inline-block; margin-left: 5px;" id="test"
+    href="#">Read More.</a>
+  <form method="post" action="/settings">
+    <div class="ui form">
+      <div class="five fields">
+        <div class="field">
+          <label>Location ID</label>
+          <input type="text" placeholder="123456" name="locid" required="required">
+        </div>
+        <div class="field">
+          <label>Store Abbreviation</label>
+          <input type="text" placeholder="BAUK" name="abbrev" required="required">
+        </div>
+        <div class="field">
+          <label> Store Fullname</label>
+          <input type="text" placeholder="Body Aware UK" name="name" required="required">
+        </div>
+        <div class="field">
+          <label>API Key</label>
+          <input type="text" name="api_key" required="required">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="text" name="pswrd" required="required">
+        </div>
+      </div>
+      <div class="five fields">
+        <div class="field">
+          <label>Shopify URL</label>
+          <input type="text" placeholder="bodyawareusa.myshopify.com" name="shop_url" required="required">
+        </div>
+        <div class="field">
+          <label>Store Logo URL</label>
+          <input type="text" name="logo_url" required="required">
+        </div>
+        <div class="field">
+          <label>Store Country</label>
+          <select class="ui dropdown" name="country" required="required">
+            <option value="">Country</option>
+            <option value="1">USA</option>
+            <option value="2">UK</option>
+            <option value="3">FUSA</option>
+            <option value="4">FUK</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="all@bodyaware.co.uk" required="required">
+        </div>
+        <div class="field">
+          <label>Warehouse</label>
+          <select class="ui dropdown" name="warehouse" required="required">
+            <option value="">Warehouse</option>
+            <% for(var i = 0; i < rows3.length;i++){ %>
+            <option value="<%= rows3[i].id %>"><%= rows3[i].name %></option>
+            <% } %>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="ui button" type="submit">Submit</button>
+  </form>
+  <% if(rows2.length != 0){ %>
+  <h3>Stores Already Linked</h3>
+  <% for (var i = 0;i < rows2.length;i++){ %>
+  <div class="ui card" style="display: inline-block;">
+    <div class="content">
+      <div class="header inline"><%= rows2[i].name %></div>
+      <div class="right floated inline"><a class="edit" data-id="<%= rows2[i].id %>" href="#">Edit</a></div>
+    </div>
+    <div class="content">
+      <div class="description">
+        <p><b><%= rows2[i].shop_url %></b></p>
+        <p><b>API key: </b><%= rows2[i].api_key %></p>
+        <p><b>Password: </b><%= rows2[i].pswrd %></p>
+
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <% }else{ %>
+  <p style="padding: 15px;">Please connect a store.</p>
+  <% } %>
+  <% } %>
+</div>
+
+<div class="ui bottom attached tab segment" data-tab="second">
+  <h3 style="display: inline-block;">Link A Warehouse</h3>
+  <form method="post" action="/settingswh">
+    <div class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <label>Warehouse Name</label>
+          <input type="text" placeholder="Scottsdale" name="name" required="required">
+        </div>
+        <div class="field">
+          <label>Warehouse Abbreviation</label>
+          <input type="text" placeholder="USA" name="shortname" required="required">
+        </div>
+      </div>
+    </div>
+    <button class="ui button" type="submit">Submit</button>
+  </form>
+  <% if(rows4.length == 0){ %>
+  <p style="display: inline-block; padding: 10px;">All existing stores are orphans. Please add warehouses and update
+    your stores so
+    that they belong to a warehouse.
+  </p>
+  <img width="40%" src="../gif/orphan.gif">
+  <% }else{ %>
+  <h3>Warehouses Already Linked</h3>
+  <% for (var i = 0;i < rows4.length;i++){ %>
+  <div class="ui card" style="display: inline-block;">
+    <div class="content">
+      <div class="header inline"><%= rows4[i].name %></div>
+      <div class="right floated inline"><a class="edit" data-id="a<%= rows4[i].id %>" href="#">Edit</a></div>
+    </div>
+    <div class="content">
+      <div class="description">
+        <p><b>Short Name: </b><%= rows4[i].shortname %></p>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <% } %>
+</div>
+<div class="ui bottom attached tab segment" data-tab="third">
+  <h3>Link Two International Stores</h3>
+  <p>This is used for comparing inventories between stores that use different warehouses.</p>
+  <div class="ui placeholder segment">
+    <div class="ui two column stackable center aligned grid">
+      <div class="ui vertical divider"><i class="exchange alternate icon"></i></div>
+      <div class=" middle aligned row">
+        <% for(var i = 0; i < rows4.length;i++){ %>
+        <div class="column" style="text-align: left; padding: 0 15%;">
+          <div class="ui icon header">
+            <%= rows4[i].name %>
+          </div>
+          <div class="ui form">
+            <div class="grouped fields">
+              <label>Please select one.</label>
+              <div class="field">
+                <div class="ui radio checkbox">
+                  <input type="radio" name="example2">
+                  <label>Body Aware</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <h3>Stores Already Linked</h3>
+  <div class="ui segments">
+    <div class="ui segment">
+      <p>Top</p>
+    </div>
+    <div class="ui segment">
+      <p>Middle</p>
+    </div>
+    <div class="ui segment">
+      <p>Middle</p>
+    </div>
+    <div class="ui segment">
+      <p>Middle</p>
+    </div>
+    <div class="ui segment">
+      <p>Bottom</p>
+    </div>
+  </div>
+</div>
+
+<div class="ui modal large test">
+  <i class="close icon"></i>
+  <div class="header">
+    Linking A Store
+  </div>
+  <div class="image content">
+    <div class="ui fluid image">
+      <img src="./gif/privateApps.gif">
+    </div>
+    <div class="description">
+      <div class="ui header">To link a Shopify store you must first create a private app in Shopify.</div>
+      <p>In your Shopify admin navigate to Apps and click "Manage Private Apps" on the bottom of this screen.</p>
+      <p>From there in the upper right hand corner click "Create a new private app".</p>
+      <p>You must fill out all of the appropriate fields and give the app full permissions in order for it to be used by
+        this site.</p>
+      <p>For more information on private apps, please view the following article. <a
+          href="https://help.shopify.com/en/manual/apps/private-apps" target="_blank">Learn more about private apps</a>.
+      </p>
+      <p>After you create a private app you will be provided with an API key and password which you will need to link up
+        a new store.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Close
+    </div>
+  </div>
+</div>
+<% for (var i = 0;i < rows2.length;i++){ %>
+<div class="ui mini modal" id="modal-<%= rows2[i].id %>">
+  <div class="header">
+    Edit <%= rows2[i].name %> Credentials
+  </div>
+  <div class="content">
+    <form class="ui form" method="post" action="/settings/<%= rows2[i].id %>">
+      <div class="field">
+        <label>Location ID</label>
+        <input type="text" name="locid" value="<%= rows2[i].id %>">
+      </div>
+      <div class="field">
+        <label>Store Name</label>
+        <input type="text" name="name" value="<%= rows2[i].name %>">
+      </div>
+      <div class="field">
+        <label>Store Url</label>
+        <input type="text" name="shop_url" value="<%= rows2[i].shop_url %>">
+      </div>
+      <div class="field">
+        <label>API Key</label>
+        <input type="text" name="api_key" value="<%= rows2[i].api_key %>">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="text" name="pswrd" value="<%= rows2[i].pswrd %>">
+      </div>
+      <div class="field">
+        <label>Store Abbreviation</label>
+        <input type="text" name="abbrev" value="<%= rows2[i].abbrev %>">
+      </div>
+      <div class="field">
+        <label>Logo URL</label>
+        <input type="text" name="logo_url" value="<%= rows2[i].logo_url %>">
+      </div>
+      <div class="field">
+        <label>Store Country</label>
+        <select class="ui dropdown" name="country" required="required">
+          <option value="">Country</option>
+          <option value="1" <% if(rows2[i].country == 1){ %> selected <% } %>>USA</option>
+          <option value="2" <% if(rows2[i].country == 2){ %> selected <% } %>>UK</option>
+          <option value="3" <% if(rows2[i].country == 3){ %> selected <% } %>>FUSA</option>
+          <option value="4" <% if(rows2[i].country == 4){ %> selected <% } %>>FUK</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Warehouse</label>
+        <select class="ui dropdown" name="warehouse" required="required">
+          <option value="">Warehouse</option>
+          <% for(var j = 0; j < rows3.length;j++){ %>
+          <option value="<%= rows3[j].id %>" <% if(rows2[i].warehouse == rows3[j].id){ %> selected <% } %>>
+            <%= rows3[j].name %></option>
+          <% } %>
+        </select>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="text" name="email" value="<%= rows2[i].email %>">
+      </div>
+      <div>
+        <a href="/settings/<%= rows2[i].id %>">Delete Store</a>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui negative button">
+      Cancel
+    </div>
+    <button class="ui positive right labeled icon button" type="submit">
+      Submit
+      <i class="checkmark icon"></i>
+    </button>
+    </form>
+  </div>
+</div>
+<% } %>
+<% if (typeof rows4 != 'undefined') { %>
+<% for (var i = 0;i < rows4.length;i++){ %>
+<div class="ui mini modal" id="modal-a<%= rows4[i].id %>">
+  <div class="header">
+    Edit <%= rows3[i].name %> Warehouse Credentials
+  </div>
+  <div class="content">
+    <form class="ui form" method="post" action="/settings/wh/<%= rows4[i].id %>">
+      <div class="field">
+        <label>Warehouse Name</label>
+        <input type="text" name="name" value="<%= rows4[i].name %>">
+      </div>
+      <div class="field">
+        <label>Warehouse Shortname</label>
+        <input type="text" name="shortname" value="<%= rows4[i].shortname %>">
+      </div>
+      <div>
+        <a href="/settings/wh/<%= rows4[i].id %>">Delete Warehouse</a>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui negative button">
+      Cancel
+    </div>
+    <button class="ui positive right labeled icon button" type="submit">
+      Submit
+      <i class="checkmark icon"></i>
+    </button>
+    </form>
+  </div>
+</div>
+<% } %>
+<% } %>
+<script>
+  $('.menu .item')
+    .tab();
+
+  $(function () {
+    $("#test").click(function () {
+      $(".test").modal('show');
+    });
+    $(".test").modal({
+      closable: true
+    });
+    $(".edit").click(function (event) {
+      var card_clicked = $(this).attr('data-id');
+      $("#modal-" + card_clicked).modal('show');
+    });
+    $("#modal-" + card_clicked).modal({
+      closable: true
+    });
+  });
+
+
+</script>
+
+<%- include ('partials/footer.ejs'); %>

@@ -1,0 +1,47 @@
+<%- include('partials/header.ejs'); %>
+<% if(obj.length>0){ %>
+
+<h3><%= obj.length %> Results Found</h3>
+<table cellspacing="0" cellpadding="0" border="0" width="100%" class="ui celled padded table product-table">
+    <thead>
+        <tr>
+            <th class="table-header-repeat line-left"><b>Name</b></th>
+            <th class="table-header-repeat line-left" width="100"><b>Orders</b></th>
+            <th class="table-header-repeat line-left"><b>Status</b></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <% var x = 0;%>
+        <% for (var i = 0; i < obj.length; i++){ x++; %>
+        <tr <% if (0 > obj[i].usr_standing) { %> class="negative" <% } %>>
+            <td>
+
+                <a href="/customer_view/<%= obj[i].usr_id %>"><%= obj[i].usr_fullname %></a>
+
+            </td>
+
+            <td>
+                <%= obj[i].usr_standing %>
+            </td>
+            <td>
+                <% if(obj[i].usr_standing == -1){ %>
+                Problem Child
+                <% } else if (obj[i].usr_standing == -2){ %>
+                Never Again
+                <% } else { %>
+                Neutral
+                <% } %>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<% }else{ %>
+<strong>Sorry, unable to find any customers matching your search.</strong>
+<br>
+<br>
+<a href="../customersearch">Go back to search</a>
+
+<% }; %>
+<%- include('partials/footer.ejs'); %>

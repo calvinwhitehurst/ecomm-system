@@ -1,0 +1,45 @@
+<%- include('partials/header.ejs'); %>
+<h1>Unfulfilled <%= storeData.name %> Orders</h1>
+
+<% let d = new Date(); %>
+<% let fiveDaysAgo = d.setDate(d.getDate() - 5); %>
+<% fiveDaysAgo = new Date(fiveDaysAgo).toISOString(); %>
+<form class="ui form" action="../print/<%= storeData.id %>" method="POST">
+  <table class="ui celled table">
+    <thead>
+      <tr>
+        <th class="collapsing">
+          <div class="ui fitted checkbox field" id="myCheckbox">
+            <input type="checkbox" onClick="toggle(this)"> <label></label>
+          </div>
+        </th>
+        <th>Order</th>
+        <th>Customer Name</th>
+        <th>Date</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i = 0 ; i < data.orders.length ; i++) { %>
+      <% if(data.orders[i].created_at > fiveDaysAgo){ %>
+      <tr>
+        <td class="collapsing">
+          <div class="ui fitted checkbox">
+            <input type="checkbox" class="chkbox" name="order" value="<%= data.orders[i].id %>"> <label></label>
+          </div>
+        </td>
+        <td><%= data.orders[i].name %></td>
+        <td><%= data.orders[i].shipping_address.first_name %> <%= data.orders[i].shipping_address.last_name %></td>
+        <td><%= moment.utc(data.orders[i].created_at).fromNow(); %></td>
+        <td>$<%= data.orders[i].total_price %></td>
+      </tr>
+      <% } %>
+      <% } %>
+    </tbody>
+  </table>
+  <button class="ui button" type="submit">Print Orders</button>
+</form>
+<script src="/js/orderview.js">
+
+</script>
+<%- include('partials/footer.ejs'); %>

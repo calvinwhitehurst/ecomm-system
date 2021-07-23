@@ -1,0 +1,38 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Raw Goods</h1>
+<div class="ui pointing secondary demo menu">
+  <a class="active blue item" data-tab="first">Vendor Name</a>
+</div>
+<div class="ui active tab segment" data-tab="first">
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th>Sku</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% var taxes = obj; %> <% for (var i = 0; i < taxes.length; i++){ %>
+      <tr>
+        <td><%= taxes[i].product %></td>
+        <td>
+          <div class="ui action input">
+            <input type="text" class="copyInput" value="<%= taxes[i].tax_code %>" />
+            <button type="button" name="copyToken" value="copy" class="copyToken ui right icon button">
+              <i class="clipboard icon"></i>
+            </button>
+          </div>
+        </td>
+        <td><%= taxes[i].tax_description %></td>
+        <td><a href="/rawGoods/<%= harms[i].harm_id %>">Delete</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('partials/footer.ejs'); %>

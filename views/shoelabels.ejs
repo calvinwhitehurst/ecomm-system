@@ -1,0 +1,108 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Create Shoe Labels</h1>
+<script type="text/javascript">
+    function misc_customlabels_add() {
+        var code = $("#misc_customlabels_code").val();
+        var color = $("#misc_customlabels_color").val();
+        var name = $("#misc_customlabels_name").val();
+        var size = $("#misc_customlabels_size").val();
+        if (code.length == 0) {
+            $.alertsAdd({
+                text: "Please enter product code",
+                stay: true,
+                type: 'attention'
+            });
+            return;
+        }
+        $("#misc_customlabels table").append("<tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;' readonly=readonly value='" + code + "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" + name + "'/></div></td><td><div class='ui input'><input type='text' style='width: 200px;' name='color[]' readonly=readonly value='" + color + "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='" + size + "'/></div></td><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr>");
+        $(".misc_customlabels_print").hide();
+        $("#misc_customlabels h4").html('');
+        $("#misc_customlabels").show();
+    }
+    function misc_customlabels_code() {
+        global_ajax('/central/misc/customlabels', {
+            action: "code",
+            code: $("#misc_customlabels_code").val()
+        }, function (data) {
+            if (data.name) {
+                $("#misc_customlabels_name").val(data.name);
+            } else {
+                $("#misc_customlabels_name").val('');
+            }
+        });
+
+    }
+    function misc_customlabels_remove(e) {
+        $(e).closest('tr').remove();
+        if ($("#misc_customlabels table tr").children().length == 0) {
+            $("#misc_customlabels").hide();
+            $(".misc_customlabels_print").hide();
+            $("#misc_customlabels h4").html('');
+        } else {
+            misc_customlabels_status();
+        }
+    }
+    function misc_customlabels_status() {
+        var labels = 0;
+        $(".misc_customlabels_quantitites").each(function () {
+            labels += parseInt($(this).val());
+        });
+
+        var sheets = Math.ceil(labels / 30);
+        if (sheets > 0) {
+            $("#misc_customlabels h4").html(sheets + " sheet(s) required for " + labels + " labels");
+            $(".misc_customlabels_print").show();
+        } else {
+            $(".misc_customlabels_print").hide();
+        }
+
+    }
+    $(document).ready(function () {
+
+    });
+</script>
+<h3>Enter product code, name, color, and size.</h3>
+<table border="0" cellpadding="5" cellspacing="5">
+    <tr>
+        <td>
+            <div class='ui input'>
+                <input type="text" id="misc_customlabels_code" style="width: 100px;" onkeyup="misc_customlabels_code();"
+                    placeholder="product code" />
+            </div>
+            <div class='ui input'>
+                <input type="text" id="misc_customlabels_name" style="width: 400px;" placeholder="name (optional)">
+            </div>
+            <div class='ui input'>
+                <input type="text" id="misc_customlabels_color" style="width: 100px;" placeholder="color (optional)">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <select class="ui dropdown" id="misc_customlabels_size" style="width: 200px;">
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+            </select>
+
+            <input type="button" value="Add" class="ui button" onclick="misc_customlabels_add();" />
+        </td>
+    </tr>
+</table>
+<br />
+<form method="post" action="/printshoes" id="misc_customlabels" style="display:none;">
+    <h3>Label Maker Queue</h3>
+    <table cellpadding="5" cellspacing="5" border="0">
+    </table>
+    <br />
+
+    <input type="submit" class="misc_customlabels_print ui button" value="Print Labels" style="display:none;" />
+    <br /><br />
+    <h4 style="margin-left: 1px;"></h4>
+    <br />
+</form>
+<%- include('partials/footer.ejs'); %>

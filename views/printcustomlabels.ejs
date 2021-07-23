@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title>Label Printer</title>
+        <style type="text/css">
+            @page  
+            { 
+                size: auto;   /* auto is the initial value */ 
+
+                /* this affects the margin in the printer settings */ 
+                margin: 1mm 1mm 1mm 1mm;  
+            } 
+            body {
+                font-size: 12px;
+                margin: 0px; 
+                padding: 0px;
+            }
+            @media all
+            {
+                    .page-break { display:none; }
+            }
+
+            @media print
+            {
+                    .page-break { display:block; page-break-before:always; height: 0px;}
+            .container {
+                float:left; width: 215px; height: 75px; padding: 15px 25px 0px 5px;
+            }
+            .container2 {
+                float:left; width: 145px; height: 40px; margin: 3px 22px 2px 15px;
+            }
+            table {
+                width:100%;
+                table-layout:fixed;
+            }
+            td {
+                width: 25%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .label-container {
+                width: 75%;
+                margin: 0 auto;
+            }
+            .product-code {
+                font-size: 24px;
+                float:left;
+                text-transform: uppercase;
+            }
+            .product-size {
+                font-size: 24px;
+                float: right;
+            }
+            .product-name {
+                clear:both;
+                font-size: 10px;
+                overflow: hidden;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="spacer"></div>
+        <table>
+            <tr>
+<% var x = 0; %>
+<% for (var i = 0; i < size.length; i++) { %>
+
+<% for (var y = 0; y < quantity[i]; y++) {x++; %>
+        <td><div class="label-container"
+           
+        <% if (x % 4 == 0) { %>
+            style="padding-left: 10px;"
+        <% } %>
+        >
+        <div class="product-code"><%= code[i] %></div>
+        <div class="product-size"><%= size[i] %></div>
+        <div class="product-name"><%= name[i] %></div>
+        </div></td>
+        <% if (x % 4 == 0) { %>
+            </tr>
+        <tr>
+        <% } %>
+        <% if (!(x % 80)) { %>
+            </tr>
+                </table>
+                    <span class="page-break">
+                    </span>
+                <div class="spacer">
+            </div>
+        <table>
+    <tr>
+        <% } %>
+
+        <% } %>
+        <% }; %>
+        
+                </tr>           
+            </table>
+    </body>
+</html>

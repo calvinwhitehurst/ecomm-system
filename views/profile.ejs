@@ -1,0 +1,47 @@
+<%- include('partials/header.ejs'); %>
+<h1>Hello, <%= rows[0].username %>!</h1>
+<br>
+<table class="ui very basic collapsing celled table">
+  <thead>
+    <tr>
+      <th>User Name</th>
+      <th>Avatar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <div class="content">
+          <h3><%= rows[0].username %></h3>
+        </div>
+      </td>
+      <td>
+        <div class="content">
+          <img src="/img/<%= rows[0].picture %>" class="ui mini rounded image">
+        </div>
+      </td>
+  </tbody>
+</table>
+<h4>Change Avatar Picture</h4>
+<form class="ui form" id="uploadForm" enctype="multipart/form-data" action="/uploads" method="POST">
+  <div class="ui action input field">
+    <input id="upload" type="text" placeholder="Upload New Avatar" readonly>
+    <input id="file" name="picture" accept="image/*" type="file" id="picture">
+  </div>
+  <br>
+  <button type="submit" class="ui button" hidden>Submit</button>
+</form>
+<script>
+  $("#upload").click(function () {
+    $(this).parent().find("input:file").click();
+  });
+
+  $('input:file', '.ui.action.input')
+    .on('change', function (e) {
+      var name = e.target.files[0].name;
+      $('input:text', $(e.target).parent()).val(name);
+    });
+
+</script>
+
+<%- include('partials/footer.ejs'); %>

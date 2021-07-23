@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Body Aware Central</title>
+  <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.0/semantic.min.css"
+    integrity="sha512-UKHKmCXlohvreqH6IGjgoRdOOcgf5kv92219JPgRSis+psiIhurMcGj8iQesD38LW0N1OSGJQFNnPiGC+lYaxQ=="
+    crossorigin="anonymous" />
+  <script src="/js/jquery.min.js"></script>
+  <link rel="stylesheet" href="/semantic/dist/semantic.min.css">
+  <script src="/semantic/dist/semantic.min.js"></script>
+  <script src="/js/semantic.min.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/js/headerscript.js"></script>
+
+  <meta name="robots" content="noindex">
+</head>
+<body>
+  <header>
+    <div class="pusher">
+      <div class="ui fixed menu asd borderless"
+        style="height: 80px!important; border-radius: 0!important; border: 0; -webkit-transition-duration: 0.1s;padding-left:1.5%; padding-right:1.5%;">
+        <a class="item" href="../logout">
+          Log Out
+        </a>
+        <div class="item">
+          <img class="ui avatar image" src="/img/<%= profile.picture %>">
+          <div class="content">
+            <div class="header"><b><%= profile.username %></b></div>
+            <% if(profile.roles == 1) { %>
+            Employee
+            <% } else if (profile.roles == 2) { %>
+            Administrator
+            <% } else { %>
+            Vendor
+            <% } %>
+          </div>
+        </div>
+        <div class="item">
+          <form method="post" action="/searchdb" id="search">
+            <div class='ui input search db'>
+              <div class="ui massive icon input">
+                <input type="text" class="prompt" name="search" value="" placeholder="Search..."
+                  <% if(typeof rows == 'undefined') { %> disabled <% } %>required>
+                <i class="search icon"></i>
+              </div>
+              <div class="results"></div>
+            </div>
+            <input type="submit" value="Search" class="ui button" <% if(typeof rows == 'undefined') { %> disabled
+              <% } %>required>
+          </form>
+        </div>
+        <% if(profile.roles == 1 || profile.roles == 2) { %>
+        <div class="right menu">
+          <div class="ui simple fixed dropdown item">
+            <div class="text">Sync A Store</div><i class="dropdown icon"></i>
+            <div class="menu">
+              <% if(typeof rows == 'undefined') { %>
+              <p>No stores are connected</p>
+              <% } else { %>
+              <% rows.forEach(function(row){ %>
+              <%- include('dynamnav2.ejs', {row: row}); %>
+              <% }); %>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    </div>
+  </header>
+  <% if(profile.roles == 1) { %>
+  <%- include('empMenu.ejs'); %>
+  <% } else if (profile.roles == 2) { %>
+  <%- include('adminMenu.ejs'); %>
+  <% } else { %>
+  <%- include('vendMenu.ejs'); %>
+  <% } %>
+
+  <script src="/js/headerscript2.js"></script>
+  <div class="container" id="page-content">

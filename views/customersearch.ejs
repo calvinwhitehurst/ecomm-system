@@ -1,0 +1,34 @@
+<%- include('partials/header.ejs'); %>
+<script type="text/javascript">
+  $(function () {
+    $(".ui.search.cust").search({
+      apiSettings: {
+        url: "../searchcustomer?q=%{query}"
+      },
+      maxResults: 15
+    });
+  });
+</script>
+
+<div id="content-outer">
+  <div id="content">
+    <h1>Search For A Customer</h1>
+    <div id="content-inner">
+      <div class="page-content">
+        <h3>Enter name below.</h3>
+        <br />
+        <form method="post" action="/searchcustomer" id="search">
+          <div class="ui input search cust">
+            <div class="ui icon massive input">
+              <input type="text" class="prompt" name="search" value="" placeholder="Search..." />
+              <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+          </div>
+          <input type="submit" value="Search" class="ui button" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer.ejs'); %>

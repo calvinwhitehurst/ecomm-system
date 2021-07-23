@@ -1,0 +1,132 @@
+<%- include('partials/header.ejs'); %>
+<h1>Customer : <%= obj1[0].usr_fullname %></h1>
+<div class="ui ribbon label">
+    <h3>Customer Details</h3>
+</div>
+<table>
+    <tbody>
+        <tr>
+            <td width="50%" style="padding:5px;">
+                <table class="ui very basic collapsing celled table">
+                    <tbody>
+                        <tr>
+                            <td><b>User Standing:</b></td>
+                            <td>
+                                <% if(obj1[0].usr_standing == -1){ %>
+                                Problem Child
+                                <% } else if (obj1[0].usr_standing == -2){ %>
+                                Never Again
+                                <% } else { %>
+                                Neutral
+                                <% } %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Email:</b></td>
+                            <td>
+                                <%= obj1[0].usr_email %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Total Spent:</b></td>
+                            <td>
+                                <%= accounting.formatMoney(obj6[0].sum); %>
+                            </td>
+                        <tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br />
+<div class="ui ribbon label">
+    <h3>Customer Reviews</h3>
+</div>
+<table class="ui very basic collapsing celled table">
+    <thead>
+        <tr>
+            <th><i>Date</i></th>
+            <th><i>Rating</i></th>
+            <th><i>Review</i></th>
+        </tr>
+    </thead>
+    <tbody>
+        <td>Date</td>
+        <td>Rating</td>
+        <td>Review</td>
+    </tbody>
+</table>
+<br />
+<div class="ui ribbon label">
+    <h3>Customer Notes</h3>
+</div>
+<table width="100%">
+    <tbody>
+        <tr valign="top">
+            <td>
+                <table width="100%" class="ui very basic collapsing celled table">
+                    <thead>
+                        <th><i>Date</i></th>
+                        <th><i>Note</i></th>
+                    </thead>
+                    <tbody>
+                        <% for (var y = 0; y < obj3.length; y++) { %>
+                        <tr>
+                            <td><%= moment(obj3[y].nte_added).format("MMM Do, YYYY") %></td>
+                            <td><%= obj3[y].nte_detail %></td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br />
+<div class="ui ribbon label">
+    <h3>Customer Addresses</h3>
+</div>
+<div class="ui two column grid">
+    <% for(var a = 0; a < obj2.length; a++) { %>
+    <div class="column">
+        <div class="ui segment">
+            <ul style="list-style-type: none;">
+                <li><%= obj2[a].ads_fullname %></li>
+                <li><%= obj2[a].ads_line1 %></li>
+                <li><%= obj2[a].ads_line2 %></li>
+                <li><%= obj2[a].ads_city %>, <%= obj2[a].ads_state %>, <%= obj2[a].ads_zip %></li>
+                <li><%= obj2[a].ads_country %></li>
+            </ul>
+        </div>
+    </div>
+    <% } %>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#data').after('<div class="ui right floated pagination menu"></div>');
+        var rowsShown = 10;
+        var rowsTotal = $('#data tbody tr').length;
+        var numPages = rowsTotal / rowsShown;
+        for (i = 0; i < numPages; i++) {
+            var pageNum = i + 1;
+            $('.ui.right.floated.pagination.menu').append('<a href="#/" class="item" rel="' + i + '">' + pageNum + '</a> ');
+        }
+        $('#data tbody tr').hide();
+        $('#data tbody tr').slice(0, rowsShown).show();
+        $('.ui.right.floated.pagination.menu a:first').addClass('active');
+        $('.ui.right.floated.pagination.menu a').bind('click', function () {
+
+            $('.ui.right.floated.pagination.menu a').removeClass('active');
+            $(this).addClass('active');
+            var currPage = $(this).attr('rel');
+            var startItem = currPage * rowsShown;
+            var endItem = startItem + rowsShown;
+            $('#data tbody tr').css('opacity', '0.0').hide().slice(startItem, endItem).
+                css('display', 'table-row').animate({ opacity: 1 }, 300);
+        });
+    });
+</script>
+
+
+<%- include('partials/footer.ejs'); %>

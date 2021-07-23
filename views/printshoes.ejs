@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Label Printer</title>
+        <style type="text/css">
+        @media print {
+            @page  { 
+                size: portrait;   /* auto is the initial value */ 
+
+                /* this affects the margin in the printer settings */ 
+                margin: 0.42in 0.22in 0.42in 0.22in ; 
+            }
+        }     
+            body {
+                font-size: 12px;
+            }
+            td {
+                font-size: 12px;
+                font-family: sans-serif;
+                width: 2.57in;
+                height: 0.99in;
+                margin: 0;
+                vertical-align: top;
+                -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+                padding-top: 0.05in;
+                padding-bottom: 0.05in;
+                padding-left: 0.25in;
+                overflow: hidden;
+            }
+            td.separator {
+	            width: 0.20in;
+            }
+            .spacer {
+                height: 22px;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <table>
+            <tr>
+<% var x = 0; %>
+<% for (var i = 0; i < name.length; i++) { %>
+<% for (var y = 0; y < quantity[i]; y++) {x++; %>
+        <td class="seperator">             
+            <strong style="font-size: 18px;"><%= code[i] %></strong>
+            <div style="width: 140px; overflow:hidden; text-wrap:none; white-space:nowrap;"><%= name[i] %></div>
+                <%= color[i] %><br/>
+                <%- size[i] %><br/>
+            </div></td>
+        <% if (x % 3 == 0) { %>
+        </tr>
+        <tr>
+        <% } %>
+        <% if (!(x % 30)) { %>
+        </tr>
+    </table>
+                    <span class="page-break"></span>
+                <div class="spacer"></div>
+                <table>
+            <tr>        
+        <% } %>
+        <% } %>
+        <% }; %>
+    </body>
+</html>

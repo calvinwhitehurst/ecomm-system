@@ -1,0 +1,14 @@
+node_modules
+.snyk
+gif
+img
+connection.js
+database.js
+uploads
+logs
+key.json
+queries.js
+muppets
+semantic
+wav
+js

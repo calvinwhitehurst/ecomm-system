@@ -1,0 +1,45 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Add A Vendor</h1>
+<form class="ui form" method="post" action="/addVendor" style="display: flow-root;">
+    <div class="five wide field">
+        <label>Vendor Name</label>
+        <input type="text" placeholder="vendor name" name="name[]">
+    </div>
+    <div class="five wide field">
+        <label>Contact Name</label>
+        <input type="text" placeholder="contact name" name="contact[]">
+    </div>
+    <div class="five wide field">
+        <label>Address</label>
+        <input type="text" placeholder="address" name="address[]">
+    </div>
+    <div class="five wide field">
+        <label>Phone</label>
+        <input type="text" placeholder="phone number" name="phone[]">
+    </div>
+    <div class="five wide field">
+        <label>Email</label>
+        <input type="email" placeholder="email" name="email[]">
+    </div>
+  <input type="submit" class="add_Vendor ui button" value="Submit" />
+  <br />
+</form>
+<br>
+<div class="ui three stackable cards">
+    <% for(var i = 0;i < rows2.length;i++){ %>
+        <div class="card">
+            <div class="content">
+                <div class="header"><%= rows2[i].name %></div>
+                <div class="description"><%= rows2[i].contact %></div>
+                <div class="description"><%= rows2[i].address %></div>
+                <div class="description"><%= rows2[i].phone %></div>
+                <div class="description"><%= rows2[i].email %></div>
+                <a href="/vendors/<%= rows2[i].id %>">Delete</a>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+
+<%- include('partials/footer.ejs'); %>

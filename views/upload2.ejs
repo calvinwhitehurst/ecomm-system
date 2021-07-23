@@ -1,0 +1,55 @@
+<%- include('partials/header.ejs'); %>
+<h1>UK Inventory Suggestions.</h1>
+<h3>Step 2: Upload UK Inventory CSV File</h3>
+<br>
+<br>
+<form action="/upload2" enctype="multipart/form-data" method="post" class="ui form">
+  <div class="ui action input field">
+    <input type="text" placeholder="UK Inventory" readonly>
+    <input id="file" type="file" name="upload" accept=".csv" onchange="ValidateSingleInput(this);">
+    <div class="ui icon button">
+      <i class="gb uk flag"></i>
+    </div>
+  </div>
+  <br>
+  <button class="ui button" type="submit" hidden>
+    Upload UK Inventory
+  </button>
+</form>
+
+<script>
+  $("input:text").click(function () {
+    $(this).parent().find("input:file").click();
+  });
+
+  $('input:file', '.ui.action.input')
+    .on('change', function (e) {
+      var name = e.target.files[0].name;
+      $('input:text', $(e.target).parent()).val(name);
+    });
+  var _validFileExtensions = [".csv"];
+  function ValidateSingleInput(oInput) {
+    if (oInput.type == "file") {
+      var sFileName = oInput.value;
+      if (sFileName.length > 0) {
+        var blnValid = false;
+        for (var j = 0; j < _validFileExtensions.length; j++) {
+          var sCurExtension = _validFileExtensions[j];
+          if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+            blnValid = true;
+            break;
+          }
+        }
+
+        if (!blnValid) {
+          alert("Sorry, " + sFileName + " is invalid, the only allowed file types are in CSV format.  Please upload a CSV inventory export file from Shopify.");
+          oInput.value = "";
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+</script>
+
+<%- include('partials/footer.ejs'); %>

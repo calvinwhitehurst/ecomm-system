@@ -1,0 +1,31 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Product Editor</h1>
+<form class="ui form">
+    <table border="0" cellpadding="10" cellspacing="10">
+        <tr>
+            <td valign="top" align="right">Code:</td>
+            <td>
+                <div class="field"><input type="text" name="prd_code" value="<%= prd_code %>"
+                        style="font-size: 1.5em;" /></div>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="right">Name:</td>
+            <td colspan="3">
+                <div class="field"><input type="text" name="prd_name" value="<%= prd_name %>" style="width: 90%;" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" align="right">Description:</td>
+            <td colspan="7">
+                <div class="field"><textarea name="prd_desc" cols="50" rows="10"
+                        style="width: 98%;"><%= prd_desc %></textarea></div>
+            </td>
+        </tr>
+    </table>
+</form>
+<a href="/productImg/<%= prd_id %>">Click For Photos</a>
+
+<%- include('partials/footer.ejs'); %>

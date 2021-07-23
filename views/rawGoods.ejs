@@ -1,0 +1,50 @@
+<%- include('partials/header.ejs'); %>
+
+<h1>Add Raw Goods</h1>
+<form class="ui form" method="post" action="/addRawGoods" style="display: flow-root;">
+    <div class="five wide field">
+        <label>Vendor</label>
+        <select type="select" class="ui fluid dropdown" name="vendor[]">
+            <option value="">vendor</option>
+            <% for(var i = 0;i < rows2.length;i++){ %>
+                <option value="<%= rows2[i].id %>"><%= rows2[i].name %></option>
+            <% } %>
+        </select>
+    </div>
+    <div class="five wide field">
+        <label>Product Type</label>
+        <input type="text" placeholder="waist eleastic" name="prd_type[]">
+    </div>
+    <div class="five wide field">
+        <label>Size</label>
+        <input type="text" placeholder="size" name="size[]">
+    </div>
+    <div class="five wide field">
+        <label>Color</label>
+        <input type="text" placeholder="blue" name="color[]">
+    </div>
+    <div class="five wide field">
+        <label>Description</label>
+        <textarea name="description[]"></textarea>
+    </div>
+    <div class="five wide field">
+        <label>Measurement</label>
+        <select type="select" class="ui fluid dropdown" name="measurement[]">
+            <option value="">measurement</option>
+            <option value="1">Pounds</option>
+            <option value="2">Yards</option>
+            <option value="3">Pieces</option>
+        </select>
+    </div>
+    <div class="five wide field">
+        <label>Sku</label>
+        <input type="text" placeholder="K9000321" name="sku[]">
+    </div>
+  <input type="submit" class="add_RawGood ui button" value="Submit" />
+  <br />
+</form>
+<br>
+
+
+
+<%- include('partials/footer.ejs'); %>
