@@ -11,9 +11,7 @@ const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt-nodejs')
 const favicon = require('serve-favicon')
 const helmet = require('helmet')
-const MySQLStore = require('express-mysql-session')(session)
 const moment = require('moment')
-const rateLimit = require('express-rate-limit')
 const isLoggedIn = require('./routes/custom_modules/isLoggedIn.js')
 const connection = require('./routes/custom_modules/connection')
 const queries = require('./routes/custom_modules/queries.js')
@@ -39,25 +37,10 @@ const connection = require('./routes/custom_modules/connection.js')
 const queries = require('./routes/custom_modules/queries.js')
 const passwordreset = require('./routes/passwordreset.js')
 const manufacturing = require('./routes/manufacturing.js')
+const limit = require('./routes/custom_modules/rateLimit.js')
+const sessionVariable = require('./routes/custom_modules/sessionVariable.js')
 
-const limit = rateLimit({
-  max: 30, // max requests
-  windowMs: 60 * 60 * 1000, // 1 Hour
-  message:
-    '<!DOCTYPE html><html><head><title>Body Aware Central</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script><meta name="robots" content="noindex"><style type="text/css">body {background-color: #DADADA;}</style></head><body><div style="margin: 10% auto; width: 50%; text-align: center;" class="ui negative message"><div class="header">Sorry you have used too many attempts to login.</div><p>Please contact the web adminstrator.</p></div></body></html>' // message to send
-})
-const options = {
-  host: 'localhost',
-  port: 3306,
-  user: '**********',
-  password: '**********',
-  database: '**********',
-  clearExpired: true,
-  checkExpirationInterval: 900000,
-  expiration: 1800000,
-  endConnectionOnClose: true
-}
-const sessionStore = new MySQLStore(options)
+
 connection.connect(err => {
   if (err) throw err
   console.log('MySQL Database is connected.')
@@ -66,11 +49,7 @@ connection.connect(err => {
 app.use(httpLogger)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(
-  helmet({
-    contentSecurityPolicy: false
-  })
-)
+app.use(helmet({contentSecurityPolicy: false}))
 app.use(require('connect-flash')())
 app.use((req, res, next) => {
   res.locals.messages = require('express-messages')(req, res)
@@ -79,20 +58,11 @@ app.use((req, res, next) => {
 app.use(cors())
 app.use(morgan('dev', { skip: skipLog }))
 app.use(
-  session({
-    key: 'session_cookie_name',
-    secret: '**************',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1800000
-    }
-  })
+  session(sessionVariable)
 )
 app.use('/img/*', isLoggedIn)
 app.use(xss())
-app.use(express.json({ limit: '10kb' })) //body limit is 10kb
+app.use(express.json({ limit: '10kb' }))
 app.use(express.static(__dirname + '/public'))
 app.use(favicon(__dirname + '/public/img/favicon.ico'))
 app.use(passport.initialize())
@@ -120,15 +90,6 @@ app.set('view engine', 'ejs')
 app.set('trust proxy', true)
 app.set('port', process.env.PORT || 3000)
 app.locals.moment = require('moment')
-
-skipLog = req => {
-  let url = req.url
-  if (url.indexOf('?') > 0) url = url.substr(0, url.indexOf('?'))
-  if (url.match(/(js|jpg|png|ico|css|woff|woff2|eot)$/gi)) {
-    return true
-  }
-  return false
-}
 
 numberWithCommas = x => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')

@@ -14,3 +14,5 @@ wav
 js
 semantic.json
 transport.js
+options.js
+sessionVariable.js
