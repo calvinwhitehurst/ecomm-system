@@ -1,11 +1,10 @@
-module.exports = function past(){
-
-var dateObj = new Date();
-var month = dateObj.getUTCMonth() + 1; //months from 1-12
-var day = dateObj.getUTCDate();
-var year = dateObj.getUTCFullYear();
-var today =  year + "-" + month + "-" + day;
-var past = new Date(today);
-var daysPrior = 10;
-return past.setDate(past.getDate() - daysPrior);
+module.exports = past = () => {
+  let dateObj = new Date()
+  let month = dateObj.getUTCMonth() + 1
+  let day = dateObj.getUTCDate()
+  let year = dateObj.getUTCFullYear()
+  let today = year + '-' + month + '-' + day
+  let past = new Date(today)
+  let daysPrior = 10
+  return past.setDate(past.getDate() - daysPrior)
 }

@@ -1,15 +1,15 @@
-var request = require("request");
+const request = require('request')
 
-module.exports = function initQuery(store, storecred) {
+module.exports = initQuery = (store, storecred) => {
   return new Promise((resolve, reject) => {
     request(store, (error, response) => {
-      let link = response.headers.link;
+      let link = response.headers.link
       nextLink =
         storecred +
-        "products.json" +
-        link.substring(link.indexOf("?"), link.indexOf(">"));
-      if (error) reject(error);
-      else resolve(nextLink);
-    });
-  });
-};
+        'products.json' +
+        link.substring(link.indexOf('?'), link.indexOf('>'))
+      if (error) reject(error)
+      else resolve(nextLink)
+    })
+  })
+}

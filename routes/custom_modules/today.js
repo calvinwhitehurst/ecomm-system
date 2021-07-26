@@ -1,8 +1,8 @@
-module.exports = function today(){
-    var dateObj = new Date();
-    var month = dateObj.getUTCMonth() + 1; //months from 1-12
-    var day = dateObj.getUTCDate();
-    var year = dateObj.getUTCFullYear();
-    var today =  year + "-" + month + "-" + day;
-    return today;
+module.exports = today = () => {
+  let dateObj = new Date()
+  let month = dateObj.getUTCMonth() + 1
+  let day = dateObj.getUTCDate()
+  let year = dateObj.getUTCFullYear()
+  let today = year + '-' + month + '-' + day
+  return today
 }

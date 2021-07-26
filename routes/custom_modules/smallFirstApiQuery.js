@@ -1,14 +1,14 @@
-const axios = require("axios");
+const axios = require('axios')
 
-module.exports = function smallFirstApiQuery(store) {
+module.exports = smallFirstApiQuery = store => {
   return new Promise((resolve, reject) => {
-    axios.get(store).then(function (response, error) {
-      var data = response.data.products;
+    axios.get(store).then((response, error) => {
+      let data = response.data.products
       if (error) {
-        reject(error);
+        reject(error)
       } else {
-        resolve(data);
+        resolve(data)
       }
-    });
-  });
-};
+    })
+  })
+}
