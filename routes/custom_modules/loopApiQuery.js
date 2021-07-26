@@ -1,6 +1,6 @@
 const axios = require("axios")
 
-module.exports = async = loopApiQuery = (urlArray, storecred, pages) => {
+module.exports = loopApiQuery = async (urlArray, storecred, pages) => {
   console.log(pages)
   let nextLink
   for (let i = 0; i < pages - 1; i++) {

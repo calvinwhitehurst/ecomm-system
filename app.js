@@ -13,12 +13,12 @@ const favicon = require('serve-favicon')
 const helmet = require('helmet')
 const moment = require('moment')
 const isLoggedIn = require('./routes/custom_modules/isLoggedIn.js')
-const connection = require('./routes/custom_modules/connection')
+const connection = require('./routes/custom_modules/connection.js')
 const queries = require('./routes/custom_modules/queries.js')
 const sqlQuery = require('./routes/custom_modules/sqlQuery.js')
 const httpLogger = require('./routes/httpLogger.js')
 require('./config/passport')(passport)
-
+const skipLog = require('./routes/custom_modules/skipLog')
 const productview = require('./routes/productview')
 const productImg = require('./routes/productimg')
 const customerview = require('./routes/customerview')
@@ -33,13 +33,11 @@ const userProfile = require('./routes/userProfile.js')
 const store = require('./routes/syncToDb.js')
 const webhooks = require('./routes/webhooks.js')
 const taxAndHarms = require('./routes/taxAndHarms.js')
-const connection = require('./routes/custom_modules/connection.js')
-const queries = require('./routes/custom_modules/queries.js')
 const passwordreset = require('./routes/passwordreset.js')
 const manufacturing = require('./routes/manufacturing.js')
 const limit = require('./routes/custom_modules/rateLimit.js')
 const sessionVariable = require('./routes/custom_modules/sessionVariable.js')
-
+const numberWithCommas = require('./routes/custom_modules/numberWithCommas')
 
 connection.connect(err => {
   if (err) throw err
@@ -91,10 +89,6 @@ app.set('trust proxy', true)
 app.set('port', process.env.PORT || 3000)
 app.locals.moment = require('moment')
 
-numberWithCommas = x => {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-}
-
 passport.use(
   'local-login',
   new LocalStrategy(
@@ -141,24 +135,11 @@ app.get('/home', isLoggedIn, (req, res) => {
       queries.stores +
       queries.stores +
       queries.userName +
-      "SELECT `sales_date`, `sales_total`, `name` FROM `sales` INNER JOIN `stores` ON sales.store = stores.id WHERE `sales_date` BETWEEN '" +
-      moment()
-        .subtract(30, 'd')
-        .format('YYYY-MM-DD') +
-      "' AND '" +
-      moment().format('YYYY-MM-DD') +
-      "' ORDER BY `sales_date` ASC, `store` DESC;" +
-      "SELECT `sku`, `title`, `variant`, COUNT(item_id) AS amount FROM `order_items` WHERE `date` BETWEEN '" +
-      moment()
-        .subtract(30, 'd')
-        .format('YYYY-MM-DD') +
-      "' AND '" +
-      moment().format('YYYY-MM-DD') +
-      "' GROUP BY `sku`, `title`, `variant` ORDER BY amount DESC LIMIT 10;" +
-      'SELECT `sku`, `title`, `variant`, COUNT(item_id) AS amount FROM `order_items` GROUP BY `sku`, `title`, `variant` ORDER BY amount DESC LIMIT 10;' +
-      "SELECT `store`, `name`, COUNT(order_id) AS total FROM `orders`, `stores` WHERE orders.store = stores.id AND fulfilled = 0 AND date <> 'NULL' GROUP BY `store`;" +
-      'SELECT `customer`, `order_id` FROM `orders` WHERE `customer` IN (SELECT `customer` FROM `orders` JOIN `stores` ON `store` = `id` WHERE `fulfilled` <> 1 AND `country` = 1 GROUP BY `customer` HAVING COUNT(*) > 1) AND `fulfilled` <> 1 ORDER BY `customer` DESC;' +
-      'SELECT a.sku, COUNT(*) AS amount FROM altered AS a JOIN order_items AS oi ON a.sku = oi.sku JOIN orders AS o ON o.order_id = oi.order_id JOIN stores AS s ON o.store = s.id WHERE o.fulfilled <> 1 AND s.country = 1 GROUP BY a.sku;',
+      queries.sales +
+      queries.topSellers +
+      queries.unfulfilled +
+      queries.combine +
+      queries.alteredItems,
     username
   )
     .then(rows => {
@@ -247,10 +228,10 @@ app.post('/home/dates', isLoggedIn, (req, res) => {
       "' AND '" +
       moment(new Date(req.body.end_date)).format('YYYY-MM-DD') +
       "' GROUP BY `sku`, `title`, `variant` ORDER BY amount DESC LIMIT 10;" +
-      'SELECT `sku`, `title`, `variant`, COUNT(item_id) AS amount FROM order_items GROUP BY `sku`, `title`, `variant` ORDER BY amount DESC LIMIT 10;' +
-      "SELECT `store`, `name`, COUNT(order_id) AS total FROM `orders`, `stores` WHERE orders.store = stores.id AND fulfilled = 0 AND date <> 'NULL' GROUP BY `store`;" +
-      'SELECT `customer`, `order_id` FROM `orders` WHERE `customer` IN (SELECT `customer` FROM `orders` JOIN `stores` ON `store` = `id` WHERE `fulfilled` <> 1 AND `country` = 1 GROUP BY `customer` HAVING COUNT(*) > 1) AND `fulfilled` <> 1 ORDER BY `customer` DESC;' +
-      'SELECT a.sku, COUNT(*) AS amount FROM altered AS a JOIN order_items AS oi ON a.sku = oi.sku JOIN orders AS o ON o.order_id = oi.order_id JOIN stores AS s ON o.store = s.id WHERE o.fulfilled <> 1 AND s.country = 1 GROUP BY a.sku;',
+      queries.topSellers +
+      queries.unfulfilled +
+      queries.combine +
+      queries.alteredItems,
     req.user.username,
     rows => {
       let data = []

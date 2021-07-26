@@ -2,7 +2,7 @@ const axios = require("axios")
 const connection = require("./connection.js")
 const queries = require("./queries.js")
 
-module.exports = async = syncInsert = (
+module.exports = syncInsert = async (
   result,
   count,
   storeid,
