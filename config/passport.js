@@ -6,6 +6,18 @@ const connection = mysql.createConnection(dbconfig.connection)
 
 connection.query('USE ' + dbconfig.database)
 module.exports = passport => {
+  passport.serializeUser((user, done) => {
+    done(null, user.id)
+  })
+
+  passport.deserializeUser((id, done) => {
+    connection.query('SELECT * FROM users WHERE id = ? ', [id], function (
+      err,
+      rows
+    ) {
+      done(err, rows[0])
+    })
+  })
   passport.use(
     'local-login',
     new LocalStrategy(
