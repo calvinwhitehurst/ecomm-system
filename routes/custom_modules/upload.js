@@ -10,7 +10,7 @@ const dbname = 'controlcenter'
 const mysql = require('mysql')
 
 module.exports = upload = (tblnm, csvfn) => {
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     csvHeaders(
       {
         file: csvfn,
@@ -88,7 +88,7 @@ module.exports = upload = (tblnm, csvfn) => {
               relax_column_count: true
             },
             (err, data) => {
-              if (err) return reject(err)
+              if (err) reject(err)
               async.eachSeries(
                 data,
                 (datum, next) => {

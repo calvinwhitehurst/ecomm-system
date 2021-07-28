@@ -23,9 +23,9 @@ passport.use(
         'SELECT * FROM users WHERE username = ?',
         [username],
         (err, rows) => {
-          if (err) return done(err)
+          if (err) done(err)
           if (rows.length) {
-            return done(
+            done(
               null,
               false,
               req.flash('signupMessage', 'That username is already taken.')

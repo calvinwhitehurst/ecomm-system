@@ -43,11 +43,10 @@ module.exports = downloadQueue = () => {
               })
           }, i * 1000)
         }
-        if (err) {
+        if (err)
           reject()
-        } else {
+        else 
           resolve()
-        }
       }
     )
   })

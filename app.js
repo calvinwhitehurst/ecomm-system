@@ -47,7 +47,7 @@ connection.connect(err => {
 app.use(httpLogger)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(helmet({contentSecurityPolicy: false}))
+app.use(helmet({ contentSecurityPolicy: false }))
 app.use(require('connect-flash')())
 app.use((req, res, next) => {
   res.locals.messages = require('express-messages')(req, res)
@@ -98,10 +98,9 @@ passport.use(
     },
     (req, username, password, done) => {
       connection.query(queries.userName, [username], (err, rows) => {
-        if (err) return done(err)
-        if (!rows.length) {
-          return done(null, false, req.flash('loginMessage', 'No user found.'))
-        }
+        if (err) done(err)
+        if (!rows.length)
+          done(null, false, req.flash('loginMessage', 'No user found.'))
         if (!bcrypt.compareSync(password, rows[0].password))
           return done(null, false, req.flash('loginMessage', 'Wrong password.'))
         return done(null, rows[0])
@@ -134,6 +133,7 @@ app.get('/home', isLoggedIn, (req, res) => {
       queries.stores +
       queries.userName +
       queries.sales +
+      queries.variableTopSellers +
       queries.topSellers +
       queries.unfulfilled +
       queries.combine +
@@ -226,7 +226,14 @@ app.post('/home/dates', isLoggedIn, (req, res) => {
       "' AND '" +
       moment(new Date(req.body.end_date)).format('YYYY-MM-DD') +
       "' GROUP BY `sku`, `title`, `variant` ORDER BY amount DESC LIMIT 10;" +
-      queries.topSellers +
+      "SELECT `sku`, `title`, `variant`, COUNT(item_id) AS amount FROM `order_items` WHERE `date` BETWEEN '" +
+      moment()
+        .subtract(30, 'd')
+        .format('YYYY-MM-DD') +
+      "' AND '" +
+      moment().format('YYYY-MM-DD') +
+      "' GROUP BY `sku`, `title`, `variant` ORDER BY amount DESC LIMIT 10;",
+    queries.topSellers +
       queries.unfulfilled +
       queries.combine +
       queries.alteredItems,

@@ -16,7 +16,6 @@ module.exports = dbsync = (storecred, storeid, warehouseid) => {
   let count = storecred + 'products/count.json'
   getProductCount(count)
     .then(result => {
-      console.log(result)
       if (result[0] === true) {
         smallFirstApiQuery(store)
           .then(data => {
@@ -31,11 +30,9 @@ module.exports = dbsync = (storecred, storeid, warehouseid) => {
       } else {
         firstApiQuery(store, storecred)
           .then(urlArray => {
-            console.log(urlArray)
             return loopApiQuery(urlArray, storecred, result[1])
           })
           .then(urlArray => {
-            console.log(urlArray)
             return syncInsert(
               urlArray,
               result[1],

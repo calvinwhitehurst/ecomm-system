@@ -4,8 +4,6 @@ module.exports = firstApiQuery = async (store, storecred) => {
   let link
   let nextLink
   let urlArray = []
-  console.log(store)
-  console.log(storecred)
   await axios.get(store).then(res => {
     link = res.headers.link;
     nextLink =

@@ -11,11 +11,8 @@ module.exports = getProductCount = url => {
         boolean = false
         pagecount = Math.ceil(data / 250)
       }
-      if (error) {
-        reject(error)
-      } else {
-        resolve([boolean, pagecount])
-      }
+      if (error) reject(error)
+      else resolve([boolean, pagecount])
     })
   })
 }
