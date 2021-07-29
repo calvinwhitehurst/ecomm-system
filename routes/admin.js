@@ -55,7 +55,8 @@ passport.use(
                 newUserMysql.picture,
                 newUserMysql.email
               ],
-              rows => {
+              (err,rows) => {
+                if (err) console.log(err)
                 newUserMysql.id = rows.insertId
                 return done(null, newUserMysql)
               }
@@ -71,7 +72,8 @@ router.get('/users', isLoggedIn, mustAdmin, (req, res) => {
   connection.query(
     queries.users + queries.userName,
     req.user.username,
-    rows => {
+    (err,rows) => {
+      if (err) console.log(err)
       res.render('users', {
         user: req.user,
         rows: rows[0],
@@ -85,7 +87,8 @@ router.get('/createuser', isLoggedIn, mustAdmin, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err,rows) => {
+      if (err) console.log(err)
       res.render('createuser', {
         message: req.flash('signupMessage'),
         user: req.user,
@@ -120,7 +123,8 @@ router.get('/settings', isLoggedIn, mustAdmin, (req, res) => {
       queries.warehousesExclude +
       queries.userName,
     req.user.username,
-    rows => {
+    (err,rows) => {
+      if (err) console.log(err)
       res.render('settings', {
         user: req.user,
         rows: rows[1],

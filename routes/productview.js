@@ -8,7 +8,8 @@ router.get('/:id', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.product + queries.userName,
     [req.params.id, req.user.username],
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('show', {
         user: req.user,
         rows: rows[0],

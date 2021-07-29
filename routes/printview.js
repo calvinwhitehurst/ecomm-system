@@ -10,7 +10,8 @@ const mustEmp = require('./custom_modules/mustEmp.js')
 
 router.post('/:id', isLoggedIn, mustEmp, (req, res) => {
   sqlQuery(queries.stores + queries.storesWhereId, req.params.id)
-    .then(rows => {
+    .then((err, rows) => {
+      if (err) console.log(err)
       let cred =
         'https://' +
         rows[1][0].api_key +

@@ -1,7 +1,6 @@
 const axios = require("axios")
 
 module.exports = async = salesSync = (urlArray, storecred, pages) => {
-  console.log(pages)
   let nextLink
   for (let i = 0; i < pages - 1; i++) {
     await axios.get(urlArray[i]).then(res => {
@@ -15,14 +14,12 @@ module.exports = async = salesSync = (urlArray, storecred, pages) => {
             nextLink.lastIndexOf(">")
           )
         urlArray.push(nextLink)
-        console.log(urlArray + " :" + [i] + " 1")
       } else {
         nextLink =
           storecred +
           "products.json" +
           nextLink.substring(nextLink.indexOf("?"), nextLink.indexOf(">"))
         urlArray.push(nextLink)
-        console.log(urlArray + " :" + [i] + " 2")
       }
     })
   }

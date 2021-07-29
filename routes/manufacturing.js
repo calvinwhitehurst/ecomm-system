@@ -8,22 +8,9 @@ router.get('/bills', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('bills', {
-        user: req.user,
-        rows: rows[0],
-        profile: rows[1][0]
-      })
-    }
-  )
-})
-
-router.get('/rawGoodsList', isLoggedIn, (req, res) => {
-  connection.query(
-    queries.stores + queries.rawGoods + queries.userName,
-    req.user.username,
-    rows => {
-      res.render('rawGoodsList', {
         user: req.user,
         rows: rows[0],
         profile: rows[1][0]
@@ -36,7 +23,8 @@ router.get('/billOfMaterials', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('billOfMaterials', {
         user: req.user,
         rows: rows[0],
@@ -46,19 +34,63 @@ router.get('/billOfMaterials', isLoggedIn, (req, res) => {
   )
 })
 
-router.get('/rawGoods', isLoggedIn, (req, res) => {
+router.get('/rawGoodsList', isLoggedIn, (req, res) => {
+  connection.query(
+    queries.stores + queries.vendors + queries.rawGoods + queries.userName,
+    req.user.username,
+    (err, rows) => {
+      if (err) {
+        console.log(err)
+      } else {
+        let data = []
+        let items = []
+        for (let i = 0; i < rows[1].length; i++) {
+          for (let j = 0; j < rows[2].length; j++) {
+            if (rows[2][j].vendor == rows[1][i].id) {
+              items.push({
+                prd_type: rows[2][j].prd_type,
+                size: rows[2][j].size,
+                color: rows[2][j].color,
+                description: rows[2][j].description,
+                price: rows[2][j].price,
+                sku: rows[2][j].sku,
+                measurement: rows[2][j].measurement
+              })
+              
+            }
+          }
+          data.push({
+            vendor: rows[1][i].name,
+            id: rows[1][i].id,
+            items: items
+          })
+          items = []
+        }
+        res.render('rawGoodsList', {
+          user: req.user,
+          rows: rows[0],
+          data: data,
+          profile: rows[3][0]
+        })
+      }
+    }
+  )
+})
+
+router.get("/rawGoods", isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.vendors + queries.userName,
     req.user.username,
-    rows => {
-      res.render('rawGoods', {
+    (err, rows) => {
+      if(err) console.log(err)
+      res.render("rawGoods", {
         user: req.user,
         rows: rows[0],
         rows2: rows[1],
-        profile: rows[2][0]
-      })
+        profile: rows[2][0],
+      });
     }
-  )
+  );
 })
 
 router.post('/addRawGoods', (req, res) => {
@@ -90,7 +122,8 @@ router.get('/vendors', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.vendors + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('vendors', {
         user: req.user,
         rows: rows[0],

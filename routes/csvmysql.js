@@ -11,7 +11,8 @@ router.get('/upload', isLoggedIn, mustEmp, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('upload', {
         user: req.user,
         rows: rows[0],
@@ -25,7 +26,8 @@ router.get('/upload2', isLoggedIn, mustEmp, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('upload2', {
         user: req.user,
         rows: rows[0],
@@ -65,7 +67,8 @@ router.get('/inventory', (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('inventory', {
         rows: rows[0],
         profile: rows[1][0]
@@ -78,7 +81,8 @@ router.get('/inventory2', (req, res) => {
   connection.query(
     queries.stores + queries.upload1 + queries.upload2 + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('inventory2', {
         rows: rows[0],
         rows1: rows[1],

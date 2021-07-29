@@ -9,7 +9,8 @@ router.get('/codes', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.taxHarmCodes + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       let obj = JSON.parse(JSON.stringify(rows[1]))
       let obj2 = JSON.parse(JSON.stringify(rows[2]))
       res.render('codes', {
@@ -28,7 +29,8 @@ router.get('/altered', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.alteredCodes + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('altered', {
         user: req.user,
         rows: rows[0],

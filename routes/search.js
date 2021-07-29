@@ -9,7 +9,8 @@ router.get('/access', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('access', {
         user: req.user,
         rows: rows[0],
@@ -76,7 +77,8 @@ router.get('/productsearch', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('productsearch', {
         user: req.user,
         rows: rows[0],
@@ -90,7 +92,8 @@ router.get('/product_search_table', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('product_search_table', {
         user: req.user,
         rows: rows[0],
@@ -140,7 +143,8 @@ router.post('/searchcustomer', (req, res) => {
       '%";' +
       queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       let obj = JSON.parse(JSON.stringify(rows[1]))
       res.render('customer_search_table', {
         obj: obj,
@@ -155,7 +159,8 @@ router.get('/customersearch', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('customersearch', {
         user: req.user,
         rows: rows[0],
@@ -169,7 +174,8 @@ router.get('/customer_search_table', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('customer_search_table', {
         user: req.user,
         rows: rows[0],
@@ -287,7 +293,8 @@ router.get('/inventoryresults', (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('inventoryresults', {
         rows: rows[0],
         profile: rows[1][0]

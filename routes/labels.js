@@ -8,7 +8,8 @@ router.get('/createlabels', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('createlabels', {
         user: req.user,
         rows: rows[0],
@@ -22,7 +23,8 @@ router.get('/scanlabels', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('scanlabels', {
         user: req.user,
         rows: rows[0],
@@ -84,7 +86,8 @@ router.get('/shoelabels', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('shoelabels', {
         user: req.user,
         rows: rows[0],

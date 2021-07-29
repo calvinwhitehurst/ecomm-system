@@ -5,9 +5,9 @@ skipLog = req => {
   let url = req.url
   if (url.indexOf('?') > 0) url = url.substr(0, url.indexOf('?'))
   if (url.match(/(js|jpg|png|ico|css|woff|woff2|eot|gif)$/gi)) {
-    true
+    return true
   }
-  false
+  return false
 }
 
 morgan.token(
@@ -16,7 +16,7 @@ morgan.token(
 )
 morgan.token('user', req => {
   if (req.user) {
-    req.user.username
+    return req.user.username
   }
   return 'no user info'
 })

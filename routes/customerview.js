@@ -21,7 +21,8 @@ router.get('/:id', isLoggedIn, mustEmp, (req, res) => {
       req.params.id,
       req.user.username
     ],
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('customer_view', {
         user: req.user,
         obj1: rows[0],

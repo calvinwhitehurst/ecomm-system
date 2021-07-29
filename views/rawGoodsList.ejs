@@ -2,9 +2,12 @@
 
 <h1>Raw Goods</h1>
 <div class="ui pointing secondary demo menu">
-  <a class="active blue item" data-tab="first">Vendor Name</a>
+  <% for (var i = 0; i < data.length; i++){ %>
+  <a class="<% if (i == 0){ %>active<% } %> blue item" data-tab="<%= data[i].id %>"><%= data[i].vendor %></a>
+  <% } %>
 </div>
-<div class="ui active tab segment" data-tab="first">
+<% for (var i = 0; i < data.length; i++){ %>
+<div class="ui <% if (i == 0){ %>active<% } %> tab segment" data-tab="<%= data[i].id %>">
   <table class="ui celled padded table">
     <thead>
       <tr>
@@ -16,23 +19,24 @@
       </tr>
     </thead>
     <tbody>
-      <% var taxes = obj; %> <% for (var i = 0; i < taxes.length; i++){ %>
+      <% for (var j = 0; j < data[i].items.length; j++){ %>
       <tr>
-        <td><%= taxes[i].product %></td>
-        <td>
-          <div class="ui action input">
-            <input type="text" class="copyInput" value="<%= taxes[i].tax_code %>" />
-            <button type="button" name="copyToken" value="copy" class="copyToken ui right icon button">
-              <i class="clipboard icon"></i>
-            </button>
-          </div>
-        </td>
-        <td><%= taxes[i].tax_description %></td>
-        <td><a href="/rawGoods/<%= harms[i].harm_id %>">Delete</a></td>
+        <td><%= data[i].items[j].sku %></td>
+        <td><%= data[i].items[j].color %> <%= data[i].items[j].size %> <%= data[i].items[j].prd_type %></td>
+        <td><%= data[i].items[j].description %></td>
+        <td><%= data[i].items[j].price %></td>
+        <td><a href="/rawGoodsList/<%= data[i].items[j].id %>">Delete</a></td>
       </tr>
       <% } %>
     </tbody>
   </table>
 </div>
+<% } %>
 
-<%- include('partials/footer.ejs'); %>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".demo.menu .item").tab({ history: false });
+  });
+</script>
+
+<%- include('partials/footer.ejs'); %>  

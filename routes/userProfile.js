@@ -20,7 +20,8 @@ router.get('/profile', isLoggedIn, mustEmp, (req, res) => {
   connection.query(
     queries.profile + queries.userName,
     [id, req.user.username],
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('profile', {
         user: req.user,
         rows: rows[0],

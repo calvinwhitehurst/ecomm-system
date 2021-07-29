@@ -5,7 +5,8 @@ const sqlQuery = require('./custom_modules/sqlQuery.js')
 
 router.get('/store/:id', (req, res) => {
   sqlQuery('SELECT * FROM `stores` WHERE `id` = ?', req.params.id)
-    .then(rows => {
+    .then((err, rows) => {
+      if (err) console.log(err)
       let cred =
         'https://' +
         rows[0].api_key +

@@ -10,7 +10,8 @@ const mustEmp = require('./custom_modules/mustEmp.js')
 
 router.get('/shippingLabels', isLoggedIn, mustEmp, (req, res) => {
   sqlQuery(queries.stores + queries.userName, req.user.username)
-    .then(rows => {
+    .then((err, rows) => {
+      if (err) console.log(err)
       let data = []
       for (let i = 0; i < rows[0].length; i++) {
         if (rows[0][i].country != 2) {

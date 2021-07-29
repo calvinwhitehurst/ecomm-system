@@ -117,7 +117,8 @@ router.get('/orderscanner', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
     req.user.username,
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('orderscanner', {
         onScan: onScan,
         user: req.user,
@@ -144,7 +145,8 @@ router.post('/inventory/(:id)', (req, res) => {
               "'; SET @p2='" +
               order.line_items[i].sku +
               "'; CALL `AllStoreIds`(@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7); SELECT @p3 AS `LocId`, @p4 AS `VarId`, @p5 AS `Api`, @p6 AS `Pswrd`, @p7 AS `Url`;",
-            rows => {
+            (err, rows) => {
+              if (err) console.log(err)
               console.log(
                 order.line_items[i].quantity +
                   ' ' +
@@ -194,7 +196,8 @@ router.post('/sales/(:id)', (req, res) => {
       ";SELECT rate FROM currency_rate WHERE date = '" +
       mysqlTimestamp +
       "';"
-  ).then(rows => {
+  ).then((err, rows) => {
+    if (err) console.log(err)
     console.log(rows[1][0].rate)
     if (data.currency === 'GBP') {
       data.subtotal_price = (

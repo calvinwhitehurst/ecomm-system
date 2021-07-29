@@ -10,7 +10,8 @@ router.get('/:id', isLoggedIn, (req, res) => {
       queries.userName +
       'SELECT pim_id from product_image where pim_prd_id = ?',
     [req.user.username, req.params.id],
-    rows => {
+    (err, rows) => {
+      if (err) console.log(err)
       res.render('product_img', {
         user: req.user, // get the user out of session and pass to template
         rows: rows[0],

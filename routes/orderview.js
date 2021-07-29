@@ -13,7 +13,8 @@ router.get('/:id', isLoggedIn, mustEmp, (req, res) => {
     req.params.id,
     req.user.username
   ])
-    .then(rows => {
+    .then((err, rows) => {
+      if (err) console.log(err)
       let queryString =
         'https://' +
         rows[1][0].api_key +

@@ -36,7 +36,8 @@ module.exports = (app, passport) => {
         queries.userName,
       username
     )
-      .then(rows => {
+      .then((err,rows) => {
+        if (err) console.log(err)
         let data = []
         for (let i = 0; i < rows[2].length; i++) {
           data.push(
