@@ -19,6 +19,13 @@ router.get('/bills', isLoggedIn, (req, res) => {
   )
 })
 
+router.get('/bills/(:id)', (req, res) => {
+  let id = req.params.id
+  connection.query(queries.vendorDelete, id, () => {
+    res.redirect('/bills')
+  })
+})
+
 router.get('/billOfMaterials', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.userName,
@@ -154,7 +161,6 @@ router.post('/addVendor', (req, res) => {
 })
 
 router.get('/vendors/(:id)', (req, res) => {
-  //move to new js file
   let id = req.params.id
   connection.query(queries.vendorDelete, id, () => {
     res.redirect('/vendors')

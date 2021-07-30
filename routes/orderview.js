@@ -13,8 +13,7 @@ router.get('/:id', isLoggedIn, mustEmp, (req, res) => {
     req.params.id,
     req.user.username
   ])
-    .then((err, rows) => {
-      if (err) console.log(err)
+    .then(rows => {
       let queryString =
         'https://' +
         rows[1][0].api_key +
@@ -24,7 +23,9 @@ router.get('/:id', isLoggedIn, mustEmp, (req, res) => {
         rows[1][0].shop_url +
         '/admin/api/2021-04/orders.json?limit=250&created_at_min=' +
         daysAgo(5)
-      request(queryString, body => {
+      request(queryString, (err, response, body) => {
+        if(err) console.log(err)
+        else console.log(response.statusCode)
         const data = JSON.parse(body)
         res.render('orderview', {
           user: req.user,

@@ -10,8 +10,7 @@ const mustEmp = require('./custom_modules/mustEmp.js')
 
 router.post('/:id', isLoggedIn, mustEmp, (req, res) => {
   sqlQuery(queries.stores + queries.storesWhereId, req.params.id)
-    .then((err, rows) => {
-      if (err) console.log(err)
+    .then(rows => {
       let cred =
         'https://' +
         rows[1][0].api_key +
@@ -29,7 +28,9 @@ router.post('/:id', isLoggedIn, mustEmp, (req, res) => {
       } else {
         var queryString = cred + 'orders.json?ids=' + req.body.order
       }
-      request(queryString, body => {
+      request(queryString, (err, response, body) => {
+        if(err) console.log(err)
+        else console.log(response.statusCode)
         const data = JSON.parse(body)
         res.render('printpage', {
           user: req.user,

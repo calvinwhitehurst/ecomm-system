@@ -125,6 +125,38 @@
             </div>
             <div class="ui card">
               <div class="content">
+                <div class="header">
+                  Shoes To Pull
+                  <div style="float: right;">
+                    <a href="/printShoesList">Print</a>
+                  </div>
+                </div>
+                <table class="ui very basic collapsing celled table">
+                  <thead>
+                    <tr>
+                      <th>Sku</th>
+                      <th>Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(let i=0; i < rows8.length; i++){ %>
+                      <tr>
+                        <td>
+                          <%= rows8[i].sku %>
+                        </td>
+                        <td>
+                          <h4 class="ui header">
+                            <%= rows8[i].amount %> %>
+                          </h4>
+                        </td>
+                      </tr>
+                      <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="ui card">
+              <div class="content">
                 <div class="header">All Time Bestsellers</div>
                 <table class="ui very basic collapsing celled table">
                   <thead>

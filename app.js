@@ -38,6 +38,7 @@ const manufacturing = require('./routes/manufacturing.js')
 const limit = require('./routes/custom_modules/rateLimit.js')
 const sessionVariable = require('./routes/custom_modules/sessionVariable.js')
 const numberWithCommas = require('./routes/custom_modules/numberWithCommas')
+const printShoesList = require('./routes/printShoesList.js')
 
 connection.connect(err => {
   if (err) throw err
@@ -75,6 +76,7 @@ app.use(webhooks)
 app.use(passwordreset)
 app.use(taxAndHarms)
 app.use(manufacturing)
+app.use(printShoesList)
 
 app.use('/product_view', productview)
 app.use('/productImg', productImg)
@@ -137,7 +139,8 @@ app.get('/home', isLoggedIn, (req, res) => {
       queries.topSellers +
       queries.unfulfilled +
       queries.combine +
-      queries.alteredItems,
+      queries.alteredItems +
+      'SELECT sku, COUNT(*) AS amount FROM order_items INNER JOIN orders ON orders.order_id = order_items.order_id WHERE order_items.sku LIKE "ZP%" AND orders.fulfilled <> 1 GROUP BY sku;',
     username
   )
     .then(rows => {
@@ -176,6 +179,7 @@ app.get('/home', isLoggedIn, (req, res) => {
           rows5: rows[8],
           rows6: rows[9],
           rows7: rows[10],
+          rows8: rows[11],
           dates: [
             { date: moment().format('MMMM Do') },
             {
