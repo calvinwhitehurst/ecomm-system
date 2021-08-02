@@ -1,0 +1,36 @@
+<%- include('partials/header.ejs'); %>
+
+    <h1 class="ui header">Create Bill Of Materials</h1>  
+<form class="ui form" method="post" action="/createBillOfMaterials" style="display: flow-root;">
+    <table>
+        <tr>
+            <div class="three wide field">
+                <label>Vendor</label>
+                <select type="text" name="vendor[]">
+                <option value=""></option>
+                    <% for(var i = 0; i < rows2.length; i++){ %>
+                    <option value="<%= rows2[i].id %>"><%= rows2[i].name %></option>
+                    <% } %>
+                </select>
+            </div>
+        </tr>
+        <tr>
+            <div class="two wide field">
+                <label>SKU (type to search)</label>
+                <input type="text" placeholder="1234" name="sku[]">
+            </div>
+            <div class="three wide field">
+                <label>Name</label>
+                <input type="text" placeholder="Waist Elastic" name="name[]">
+            </div>
+        </tr>
+        <tr>
+            <div class="one wide field">
+                <label>Qty</label>
+                <input type="text" placeholder="34" name="qty[]">
+            </div>
+        </tr>
+    </table>
+</form>
+
+<%- include('partials/footer.ejs'); %>  

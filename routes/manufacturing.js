@@ -41,6 +41,22 @@ router.get('/billOfMaterials', isLoggedIn, (req, res) => {
   )
 })
 
+router.get('/createBillOfMaterials', isLoggedIn, (req, res) => {
+  connection.query(
+    queries.stores + queries.userName + queries.vendors,
+    req.user.username,
+    (err, rows) => {
+      if (err) console.log(err)
+      res.render('createBillOfMaterials', {
+        user: req.user,
+        rows: rows[0],
+        profile: rows[1][0],
+        rows2: rows[2]
+      })
+    }
+  )
+})
+
 router.get('/rawGoodsList', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.vendors + queries.rawGoods + queries.userName,
