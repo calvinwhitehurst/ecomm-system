@@ -57,6 +57,35 @@ router.get('/createBillOfMaterials', isLoggedIn, (req, res) => {
   )
 })
 
+router.get('/searchOrderItems', (req, res) => {
+  connection.query(
+    queries.searchOrderItems +
+      req.query.q +
+      '%" OR prd_type LIKE "%' +
+      req.query.q +
+      '%"',
+    (err, rows) => {
+      if (err) throw err
+      let data = {
+        results: []
+      }
+      for (i = 0; i < rows.length; i++) {
+        let object = {
+          title: rows[i].sku,
+          description: `${rows[i].size} ${rows[i].color} ${rows[i].prd_type} - ${rows[i].vendor}`,
+        }
+        data.results.push(object)
+      }
+      res.send(JSON.stringify(data))
+    }
+  )
+})
+
+router.post('/submitBill', isLoggedIn, (req, res) => {
+  console.log(req.body)
+  res.redirect('/createbillOfMaterials')
+})
+
 router.get('/rawGoodsList', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.vendors + queries.rawGoods + queries.userName,

@@ -1,12 +1,65 @@
 <%- include('partials/header.ejs'); %>
+<script type="text/javascript">
+    let i = 0
+    function create_bill_add() {
+        let sku = $("#create_bill_sku").val();
+        let name = $("#create_bill_name").val();
+        let qty = $("#create_bill_qty").val();
+        let vendor = $("#create_bill_vendor").val();
+        if (sku.length == 0) {
+            $.alertsAdd({
+                text: "Please enter product code",
+                stay: true,
+                type: 'attention'
+            });
+            return;
+        }
+        if ($("#create_bill table").parent().find("#true").length == 0){
+            $("#create_bill table").append("<input type='hidden' id='create_bill_vendor' name='vendor' value='" + vendor + "' />");
+        }
+
+        $("#create_bill table").append("<tr><td><div class='ui input' id='true'><input type='text' name='order_items[" + i + "][sku]' style='width: 100px;' readonly=readonly value='" + sku + "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='order_items[" + i + "][name]' readonly=readonly value='" + name + "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='order_items[" + i + "][qty]' readonly=readonly value='" + qty + "'/></div></td><td><input type='button' class='ui button' value='remove' onclick='create_bill_remove(this);' /></td></tr>");
+        $("#create_bill h4").html('');
+        $("#create_bill").show();
+        i++
+    }
+
+    function create_bill_remove(e) {
+        $(e).closest('tr').remove();
+        if ($("#create_bill table tr").children().length == 0) {
+            $("#create_bill").hide();
+            $("#create_bill h4").html('');
+        }
+    }
+
+    $(function () {
+        $('.ui.search.codes').search({
+            apiSettings: {
+                url: '../searchOrderItems?q=%{query}'
+            },
+            maxResults: 10,
+            showNoResults: false
+        });
+    });
+
+    $(document).on("click keypress", ".result", function (e) {
+        if (e.which == 13 || e.type == "click") {
+            $("#create_bill_name").val($(this).find("div:last").text());
+        }
+    });
+    // $(".submit_bill").submit(function(event) {
+    //     console.log( $( this ).serializeArray() );
+    //     event.preventDefault();
+    // });
+</script>
 
     <h1 class="ui header">Create Bill Of Materials</h1>  
-<form class="ui form" method="post" action="/createBillOfMaterials" style="display: flow-root;">
+<form class="ui form" method="post" id="search" action="/searchOrderItems" style="display: flow-root;">
     <table>
         <tr>
             <div class="three wide field">
                 <label>Vendor</label>
-                <select type="text" name="vendor[]">
+                <select type="text" name="vendor[]" id="create_bill_vendor">
                 <option value=""></option>
                     <% for(var i = 0; i < rows2.length; i++){ %>
                     <option value="<%= rows2[i].id %>"><%= rows2[i].name %></option>
@@ -15,22 +68,36 @@
             </div>
         </tr>
         <tr>
-            <div class="two wide field">
-                <label>SKU (type to search)</label>
-                <input type="text" placeholder="1234" name="sku[]">
+            <div class="ui input search codes">
+                <div>
+                    <label>SKU (type to search)</label>
+                    <input type="text" id="create_bill_sku" placeholder="1234" name="search" value="" class="prompt">
+                </div>
+                <div class="results"></div>
             </div>
             <div class="three wide field">
                 <label>Name</label>
-                <input type="text" placeholder="Waist Elastic" name="name[]">
+                <input type="text" placeholder="Waist Elastic" id="create_bill_name" name="name[]">
             </div>
         </tr>
         <tr>
             <div class="one wide field">
                 <label>Qty</label>
-                <input type="text" placeholder="34" name="qty[]">
+                <input type="text" placeholder="34" id="create_bill_qty" name="qty[]">
             </div>
+            <input type="button" value="Add" class="ui button" onclick="create_bill_add();" />
         </tr>
     </table>
 </form>
-
+<br />
+    <form method="post" action="/submitBill" id="create_bill" style="display:none;" class="submit_bill">
+        <h3>Order Items</h3>
+        <table cellpadding="5" cellspacing="5" border="0">
+        </table>
+        <br />
+        <input type="submit" class="create_bill_submit ui button" value="Submit" />
+        <br /><br />
+        <h4 style="margin-left: 1px;"></h4>
+        <br />
+    </form>
 <%- include('partials/footer.ejs'); %>  
