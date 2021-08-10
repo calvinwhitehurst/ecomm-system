@@ -3,6 +3,9 @@ const router = express.Router()
 const connection = require('./custom_modules/connection')
 const queries = require('./custom_modules/queries.js')
 const isLoggedIn = require('./custom_modules/isLoggedIn.js')
+const moment = require('moment')
+const mysqlTimestamp = moment(Date.now()).format('MMMM Do YYYY, h:mm a')
+const numberWithCommas = require('./custom_modules/numberWithCommas.js')
 
 router.get('/bills', isLoggedIn, (req, res) => {
   connection.query(
@@ -43,7 +46,7 @@ router.get('/billOfMaterials', isLoggedIn, (req, res) => {
 
 router.get('/createBillOfMaterials', isLoggedIn, (req, res) => {
   connection.query(
-    queries.stores + queries.userName + queries.vendors,
+    queries.stores + queries.userName + queries.vendors + queries.lastBill,
     req.user.username,
     (err, rows) => {
       if (err) console.log(err)
@@ -51,7 +54,8 @@ router.get('/createBillOfMaterials', isLoggedIn, (req, res) => {
         user: req.user,
         rows: rows[0],
         profile: rows[1][0],
-        rows2: rows[2]
+        rows2: rows[2],
+        rows3: rows[3]
       })
     }
   )
@@ -63,7 +67,7 @@ router.get('/searchOrderItems', (req, res) => {
       req.query.q +
       '%" OR prd_type LIKE "%' +
       req.query.q +
-      '%"',
+      '%";',
     (err, rows) => {
       if (err) throw err
       let data = {
@@ -73,6 +77,7 @@ router.get('/searchOrderItems', (req, res) => {
         let object = {
           title: rows[i].sku,
           description: `${rows[i].size} ${rows[i].color} ${rows[i].prd_type} - ${rows[i].vendor}`,
+          price: "$" + numberWithCommas(rows[i].price)
         }
         data.results.push(object)
       }
@@ -82,6 +87,25 @@ router.get('/searchOrderItems', (req, res) => {
 })
 
 router.post('/submitBill', isLoggedIn, (req, res) => {
+  let data =[
+    mysqlTimestamp,
+    req.body.vendor,
+    mysqlTimestamp,
+    req.body.tracking,
+    req.user.username,
+    req.body.description,
+    req.body.delivered
+  ]
+  connection.query('INSERT INTO bill_of_materials (date_created, vendor, date_placed, tracking, user, needed_for, delivered) VALUES (?,?,?,?,?,?,?);', data);
+  for(let i = 0;i < req.body.order_items.length; i++){
+    let data2 = [
+      req.body.order_items[i].sku,
+      req.body.order_items[i].qty,
+      req.body.order_items[i].price,
+      req.body.number
+    ]
+    connection.query('INSERT INTO bill_items (sku, qty, total_price, bom_id) VALUES (?,?,?,?);', data2);
+  }
   console.log(req.body)
   res.redirect('/createbillOfMaterials')
 })
