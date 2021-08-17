@@ -1,98 +1,31 @@
 <%- include('partials/header.ejs'); %>
 <h1>Current Bills Of Materials </h1>
 <div class="ui grid">
-    <div class="row">
-        <div class="ui middle aligned relaxed divided list six wide column">
-            <div class="item">
-            <div class="right floated content">
-                <div class="ui button">Edit</div>
-                <div class="ui button">Delete</div>
-            </div>
-            <div class="content" style="display: inline-flex;">
-                <div>
-                    <h3><a href="#">This is the title</a></h3>
-                    Vendor Name
+    <% for(let i = 0;i < rows2.length;i++){ %> 
+        <div class="row">
+            <div class="ui middle aligned relaxed divided list eight wide column">
+                <div class="item">
+                <div class="right floated content">
+                    <div class="ui button">Edit</div>
+                    <div class="ui button">Delete</div>
                 </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3>Jan. 15th, 2021</h3>
-                    Placed By Tess
+                <div class="content" style="display: inline-flex;">
+                    <div>
+                        <h3>BOL: <a href="#">#<%= rows2[i].id %></a></h3>
+                        <%= rows2[i].vendor %>
+                    </div>
+                    <div style="margin: 0 20px 0 20px">
+                        <h3><%= rows2[i].date_placed %></h3>
+                        Placed By <%= rows2[i].user %>
+                    </div>
+                    <div style="margin: 0 20px 0 20px">
+                        <h3><strong>Tracking: </strong> <a href="<% if (rows2[i].tracking.startsWith("1Z") == true){ %>https://www.ups.com/track?loc=en_US&tracknum=<%= rows2[i].tracking %><% } else if (rows2[i].tracking.length == 12) { %>http://www.fedex.com/Tracking?language=english&tracknumbers=<%= rows2[i].tracking %><% } else { %>#<% } %>"><%= rows2[i].tracking %></a></h3>
+                    </div>
                 </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3><strong>Status:</strong> Draft</h3>
                 </div>
-            </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="ui middle aligned relaxed divided list six wide column">
-            <div class="item">
-            <div class="right floated content">
-                <div class="ui button">Edit</div>
-                <div class="ui button">Delete</div>
-            </div>
-            <div class="content" style="display: inline-flex;">
-                <div>
-                    <h3><a href="#">This is the title</a></h3>
-                    Vendor Name
-                </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3>Jan. 15th, 2021</h3>
-                    Placed By Tess
-                </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3><strong>Status:</strong> Draft</h3>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="ui middle aligned relaxed divided list six wide column">
-            <div class="item">
-            <div class="right floated content">
-                <div class="ui button">Edit</div>
-                <div class="ui button">Delete</div>
-            </div>
-            <div class="content" style="display: inline-flex;">
-                <div>
-                    <h3><a href="#">This is the title</a></h3>
-                    Vendor Name
-                </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3>Jan. 15th, 2021</h3>
-                    Placed By Tess
-                </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3><strong>Status:</strong> Draft</h3>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="ui middle aligned relaxed divided list six wide column">
-            <div class="item">
-            <div class="right floated content">
-                <div class="ui button">Edit</div>
-                <div class="ui button">Delete</div>
-            </div>
-            <div class="content" style="display: inline-flex;">
-                <div>
-                    <h3><a href="#">This is the title</a></h3>
-                    Vendor Name
-                </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3>Jan. 15th, 2021</h3>
-                    Placed By Tess
-                </div>
-                <div style="margin: 0 20px 0 20px">
-                    <h3><strong>Status:</strong> Draft</h3>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>   
+    <% } %>
 </div>
 
   <%- include('partials/footer.ejs'); %>  

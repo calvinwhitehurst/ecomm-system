@@ -9,14 +9,15 @@ const numberWithCommas = require('./custom_modules/numberWithCommas.js')
 
 router.get('/bills', isLoggedIn, (req, res) => {
   connection.query(
-    queries.stores + queries.userName,
+    queries.stores + queries.userName + queries.getBills,
     req.user.username,
     (err, rows) => {
       if (err) console.log(err)
       res.render('bills', {
         user: req.user,
         rows: rows[0],
-        profile: rows[1][0]
+        profile: rows[1][0],
+        rows2: rows[2]
       })
     }
   )

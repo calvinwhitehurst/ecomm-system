@@ -198,12 +198,10 @@ router.post('/sales/(:id)', (req, res) => {
       "';"
   ).then((err, rows) => {
     if (err) console.log(err)
-    console.log(rows[1][0].rate)
     if (data.currency === 'GBP') {
       data.subtotal_price = (
         Math.round(data.subtotal_price * rows[1][0].rate * 100) / 100
       ).toFixed(2)
-      console.log(data.subtotal_price)
     }
     connection.query(
       'UPDATE `sales` SET `sales_total` = `sales_total` + ' +
