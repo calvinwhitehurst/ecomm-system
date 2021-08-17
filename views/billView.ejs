@@ -33,14 +33,14 @@
 
 </script>
 
-    <h1 class="ui header">Create Bill Of Materials</h1>  
+    <h1 class="ui header">Edit Bill Of Materials</h1>  
 <form class="ui form" method="post" id="search" action="/searchOrderItems" style="display: flow-root;">
     <table>
         <tr>
             <div class="three wide field">
                 <label>Vendor</label>
                 <select type="text" name="vendor[]" id="create_bill_vendor">
-                <option value=""></option>
+                <option value="<%= rows3[0].id %>"><%= rows3[0].vendor_name %></option>
                     <% for(var i = 0; i < rows2.length; i++){ %>
                     <option value="<%= rows2[i].id %>"><%= rows2[i].name %></option>
                     <% } %>
@@ -76,26 +76,53 @@
             <tr>
                 <div class="five wide field">
                     <label>What is the order for?</label>
-                    <textarea placeholder="Enter description" id="create_bill_description" name="description"></textarea>
+                    <textarea placeholder="Enter description" id="create_bill_description" name="description" value=""><%= rows3[0].needed_for %></textarea>
                 </div>
             </tr>
             <tr>
                 <div class="three wide field">
                     <label>Tracking Number</label>
-                    <input type="text" placeholder="34452045321487" id="create_bill_tracking" name="tracking">
+                    <input value="<%= rows3[0].tracking %>" type="text" placeholder="34452045321487" id="create_bill_tracking" name="tracking">
                 </div>
             </tr>
             <tr>
                 <div class="ui toggle checkbox" id="create_bill_delivered">
-                    <input id='create_bill_not_delivered' type='hidden' value='0' name='delivered'>
-                    <input type="checkbox" name="delivered" value="0">
-                    <input id="create_bill_number" type="hidden" value="<% if (typeof rows3[0] !== 'undefined'){ %> <%= rows3[0].id + 1 %> <% } else { %> 1 <% } %>" name="number">
+                    <input id='create_bill_not_delivered' type='hidden' value='<%= rows3[0].delivered %>' name='delivered'>
+                    <input type="checkbox" name="delivered" value="<%= rows3[0].delivered %>">
+                    <input id="create_bill_number" type="hidden" value="<%= rows3[0].id %>" name="number">
                     <label>Delivered</label>
                 </div>
             </tr>
             <tr>
                 <h3>Order Items</h3>
             </tr>
+            <% for(var j =0;j < rows3.length; j++) { %> 
+                <tr>
+                    <td>
+                        <div class="ui input" id="true">
+                            <input type="text" name="order_items[<%= j %>][sku]" style="width: 100px;" readonly=readonly value="<%= rows3[j].sku %>"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui input">
+                            <input type="text" style="width: 400px;" name="order_items[<%= j %>][name]" readonly=readonly value="<%= rows3[j].size %> <%= rows3[j].color %> <%= rows3[j].prd_type %>"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui input">
+                            <input type="text" style="width: 50px;" name="order_items[<%= j %>][qty]" readonly=readonly value="<%= rows3[j].qty %>"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui input">
+                            <input id="create_bill_price" type="hidden" value="<%= rows3[j].total_price %>" name="order_items[<%= j %>][price]" readonly=readonly>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="button" class="ui button" value="remove" onclick="create_bill_remove(this);" />
+                    </td>
+                </tr>
+            <% } %>
         </table>
         <br />
 

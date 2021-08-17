@@ -23,11 +23,37 @@ router.get('/bills', isLoggedIn, (req, res) => {
   )
 })
 
-router.get('/bills/(:id)', (req, res) => {
-  let id = req.params.id
-  connection.query(queries.vendorDelete, id, () => {
-    res.redirect('/bills')
-  })
+router.get('/bills/delete/(:id)', isLoggedIn, (req, res) => {
+  connection.query(
+    queries.stores + queries.userName + queries.billsDelete,
+    [req.user.username, req.params.id],
+    (err, rows) => {
+      if (err) console.log(err)
+      res.render('bills', {
+        user: req.user,
+        rows: rows[0],
+        profile: rows[1][0],
+        rows2: rows[2]
+      })
+    }
+  )
+})
+
+router.get('/bills/edit/(:id)', isLoggedIn, (req, res) => {
+  connection.query(
+    queries.stores + queries.userName + queries.vendors + queries.billsEdit,
+    [req.user.username, req.params.id],
+    (err, rows) => {
+      if (err) console.log(err)
+      res.render('billView', {
+        user: req.user,
+        rows: rows[0],
+        profile: rows[1][0],
+        rows2: rows[2],
+        rows3: rows[3]
+      })
+    }
+  )
 })
 
 router.get('/billOfMaterials', isLoggedIn, (req, res) => {
@@ -78,7 +104,7 @@ router.get('/searchOrderItems', (req, res) => {
         let object = {
           title: rows[i].sku,
           description: `${rows[i].size} ${rows[i].color} ${rows[i].prd_type} - ${rows[i].vendor}`,
-          price: "$" + numberWithCommas(rows[i].price)
+          price: '$' + numberWithCommas(rows[i].price)
         }
         data.results.push(object)
       }
@@ -88,7 +114,7 @@ router.get('/searchOrderItems', (req, res) => {
 })
 
 router.post('/submitBill', isLoggedIn, (req, res) => {
-  let data =[
+  let data = [
     mysqlTimestamp,
     req.body.vendor,
     mysqlTimestamp,
@@ -97,15 +123,21 @@ router.post('/submitBill', isLoggedIn, (req, res) => {
     req.body.description,
     req.body.delivered
   ]
-  connection.query('INSERT INTO bill_of_materials (date_created, vendor, date_placed, tracking, user, needed_for, delivered) VALUES (?,?,?,?,?,?,?);', data);
-  for(let i = 0;i < req.body.order_items.length; i++){
+  connection.query(
+    'INSERT INTO bill_of_materials (date_created, vendor, date_placed, tracking, user, needed_for, delivered) VALUES (?,?,?,?,?,?,?);',
+    data
+  )
+  for (let i = 0; i < req.body.order_items.length; i++) {
     let data2 = [
       req.body.order_items[i].sku,
       req.body.order_items[i].qty,
       req.body.order_items[i].price,
       req.body.number
     ]
-    connection.query('INSERT INTO bill_items (sku, qty, total_price, bom_id) VALUES (?,?,?,?);', data2);
+    connection.query(
+      'INSERT INTO bill_items (sku, qty, total_price, bom_id) VALUES (?,?,?,?);',
+      data2
+    )
   }
   console.log(req.body)
   res.redirect('/createbillOfMaterials')
@@ -133,7 +165,6 @@ router.get('/rawGoodsList', isLoggedIn, (req, res) => {
                 sku: rows[2][j].sku,
                 measurement: rows[2][j].measurement
               })
-              
             }
           }
           data.push({
@@ -154,20 +185,20 @@ router.get('/rawGoodsList', isLoggedIn, (req, res) => {
   )
 })
 
-router.get("/rawGoods", isLoggedIn, (req, res) => {
+router.get('/rawGoods', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.vendors + queries.userName,
     req.user.username,
     (err, rows) => {
-      if(err) console.log(err)
-      res.render("rawGoods", {
+      if (err) console.log(err)
+      res.render('rawGoods', {
         user: req.user,
         rows: rows[0],
         rows2: rows[1],
-        profile: rows[2][0],
-      });
+        profile: rows[2][0]
+      })
     }
-  );
+  )
 })
 
 router.post('/addRawGoods', (req, res) => {

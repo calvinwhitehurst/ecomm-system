@@ -6,12 +6,12 @@
             <div class="ui middle aligned relaxed divided list eight wide column">
                 <div class="item">
                 <div class="right floated content">
-                    <div class="ui button">Edit</div>
-                    <div class="ui button">Delete</div>
+                    <div class="ui button" target="_blank"><a href="bills/edit/<%= rows2[i].id %>">Edit</a></div>
+                    <div class="ui button"><a href="bills/delete/<%= rows2[i].id %>">Delete</a></div>
                 </div>
                 <div class="content" style="display: inline-flex;">
                     <div>
-                        <h3>BOL: <a href="#">#<%= rows2[i].id %></a></h3>
+                        <h3>BOL: #<%= rows2[i].id %></h3>
                         <%= rows2[i].vendor %>
                     </div>
                     <div style="margin: 0 20px 0 20px">
