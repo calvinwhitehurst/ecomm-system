@@ -6,8 +6,8 @@
             <div class="ui middle aligned relaxed divided list eight wide column">
                 <div class="item">
                 <div class="right floated content">
-                    <div class="ui button" target="_blank"><a href="bills/edit/<%= rows2[i].id %>">Edit</a></div>
-                    <div class="ui button"><a href="bills/delete/<%= rows2[i].id %>">Delete</a></div>
+                    <div class="ui button" target="_blank"><a class="link-button" target="_blank" href="bills/edit/<%= rows2[i].id %>">Edit</a></div>
+                    <div class="ui button show-modal" id="trigger<%= [i] %>">Delete</div>
                 </div>
                 <div class="content" style="display: inline-flex;">
                     <div>
@@ -19,7 +19,7 @@
                         Placed By <%= rows2[i].user %>
                     </div>
                     <div style="margin: 0 20px 0 20px">
-                        <h3><strong>Tracking: </strong> <a href="<% if (rows2[i].tracking.startsWith("1Z") == true){ %>https://www.ups.com/track?loc=en_US&tracknum=<%= rows2[i].tracking %><% } else if (rows2[i].tracking.length == 12) { %>http://www.fedex.com/Tracking?language=english&tracknumbers=<%= rows2[i].tracking %><% } else { %>#<% } %>"><%= rows2[i].tracking %></a></h3>
+                        <h3><strong>Tracking: </strong> <a href="<% if (rows2[i].tracking.startsWith("1Z") == true){ %>https://www.ups.com/track?loc=en_US&tracknum=<%= rows2[i].tracking %><% } else if (rows2[i].tracking.length == 12) { %>http://www.fedex.com/Tracking?language=english&tracknumbers=<%= rows2[i].tracking %><% } else { %>#<% } %>"><%= rows2[i].tracking %> <i class="external alternate icon"></i></a></h3>
                     </div>
                 </div>
                 </div>
@@ -27,5 +27,31 @@
         </div>
     <% } %>
 </div>
+<% for(let j = 0;j < rows2.length;j++){ %> 
+    <div class="ui mini modal event-modal info" data-object="trigger<%= [j] %>">
+        <div class="content">
+        <p>Are you sure you want to delete this order?</p>
+        </div>
+        <div class="actions">
+            <div class="ui negative button">
+                <a class="link-button" href="bills/delete/<%= rows2[j].id %>">Delete</a>
+            </div>
+            <div class="ui deny button">
+                Cancel
+            </div>
+        </div>
+    </div>
+<% } %>
 
+<script type="text/javascript">
+
+$('.ui.mini.modal.event-modal.info').modal({
+    allowMultiple: true
+  });
+
+$('.event-modal.info').each(function(idx, elem) {
+	$(elem).modal('attach events', '#' + $(elem).attr('data-object'));
+});
+
+</script>
   <%- include('partials/footer.ejs'); %>  

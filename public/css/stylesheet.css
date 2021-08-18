@@ -179,3 +179,7 @@ path.domain {
 	padding-bottom: .57142857em;
 } */
 
+.link-button, .link-button:hover {
+  text-decoration: none;
+  color: inherit;
+}

@@ -23,20 +23,11 @@ router.get('/bills', isLoggedIn, (req, res) => {
   )
 })
 
-router.get('/bills/delete/(:id)', isLoggedIn, (req, res) => {
-  connection.query(
-    queries.stores + queries.userName + queries.billsDelete,
-    [req.user.username, req.params.id],
-    (err, rows) => {
-      if (err) console.log(err)
-      res.render('bills', {
-        user: req.user,
-        rows: rows[0],
-        profile: rows[1][0],
-        rows2: rows[2]
-      })
-    }
-  )
+router.get('/bills/delete/(:id)', (req, res) => {
+  connection.query(queries.billsDelete, [req.params.id, req.params.id], err => {
+    if (err) console.log(err)
+    res.redirect('/bills')
+  })
 })
 
 router.get('/bills/edit/(:id)', isLoggedIn, (req, res) => {

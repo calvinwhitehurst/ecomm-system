@@ -96,7 +96,7 @@
             <tr>
                 <h3>Order Items</h3>
             </tr>
-            <% for(var j =0;j < rows3.length; j++) { %> 
+            <% for (var j =0;j < rows3.length; j++) { %> 
                 <tr>
                     <td>
                         <div class="ui input" id="true">
@@ -114,8 +114,9 @@
                         </div>
                     </td>
                     <td>
-                        <div class="ui input">
-                            <input id="create_bill_price" type="hidden" value="<%= rows3[j].total_price %>" name="order_items[<%= j %>][price]" readonly=readonly>
+                        <div class="ui right labeled input">
+                            <label for="create_bill_price" class="ui label">$</label>
+                            <input id="create_bill_price" type="text" style="width: 70px;" value="<%= rows3[j].total_price %>" name="order_items[<%= j %>][price]" readonly=readonly>
                         </div>
                     </td>
                     <td>
