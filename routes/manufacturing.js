@@ -134,6 +134,44 @@ router.post('/submitBill', isLoggedIn, (req, res) => {
   res.redirect('/createbillOfMaterials')
 })
 
+router.post('/billItemRemove', (req, res) => {
+  console.log(req.body.data)
+  connection.query('DELETE FROM bill_items WHERE item_id = ?;', req.body.data)
+    res.status(200)
+})
+
+router.post('/updateBill/(:id)', isLoggedIn, (req, res) => {
+  console.log(req.body)
+  let data = [
+    mysqlTimestamp,
+    req.body.vendor[0],
+    mysqlTimestamp,
+    req.body.tracking,
+    req.user.username,
+    req.body.description,
+    req.body.delivered,
+    req.params.id
+  ]
+  connection.query(
+    'UPDATE bill_of_materials SET date_created = ?, vendor = ?, date_placed = ?, tracking = ?, user = ?, needed_for = ?, delivered = ? WHERE id = ?;',
+    data
+  )
+  for (let i = 0; i < req.body.order_items.length; i++) {
+    let data2 = [
+      req.body.order_items[i].sku,
+      req.body.order_items[i].qty,
+      req.body.order_items[i].price,
+      req.body.number,
+      req.params.id
+    ]
+    connection.query(
+      'INSERT INTO bill_items (sku, qty, total_price, bom_id) VALUES (?,?,?,?);',
+      data2
+    )
+  }
+  res.redirect('/bills')
+})
+
 router.get('/rawGoodsList', isLoggedIn, (req, res) => {
   connection.query(
     queries.stores + queries.vendors + queries.rawGoods + queries.userName,

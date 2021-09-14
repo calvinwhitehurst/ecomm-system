@@ -263,7 +263,7 @@ router.get('/scan/(:id)', (req, res) => {
         let object = {
           title: rows[i].title,
           variant: rows[i].variant,
-          order: rows[i].order_id,
+          order_id: rows[i].order_id,
           sku: rows[i].sku,
           quantity: rows[i].qty
         }

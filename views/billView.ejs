@@ -1,12 +1,15 @@
 <%- include('partials/header.ejs'); %>
+
 <script type="text/javascript">
-    let i = 0
+    let i = 0;
+    function reloadWithNoCache(){
+  window.location = window.location.href + '?eraseCache=' + Math.random();
+}
     function create_bill_add() {
         let sku = $("#create_bill_sku").val();
         let name = $("#create_bill_name").val();
         let qty = $("#create_bill_qty").val();
         let price = $('#create_bill_price').val();
-        let vendor = $("#create_bill_vendor").val();
         if (sku.length == 0) {
             $.alertsAdd({
                 text: "Please enter product code",
@@ -15,10 +18,6 @@
             });
             return;
         }
-        if ($("#create_bill table").parent().find("#true").length == 0){
-            $("#create_bill table").append("<input type='hidden' id='create_bill_vendor' name='vendor' value='" + vendor + "' />");
-        }
-
         $("#create_bill table").append("<tr><td><input id='create_bill_price' type='hidden' value='" + parseFloat(price.substring(1)).toFixed(2) * qty + "' name='order_items[" + i + "][price]'><div class='ui input' id='true'><input type='text' name='order_items[" + i + "][sku]' style='width: 100px;' readonly=readonly value='" + sku + "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='order_items[" + i + "][name]' readonly=readonly value='" + name + "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='order_items[" + i + "][qty]' readonly=readonly value='" + qty + "'/></div></td><td><input type='button' class='ui button' value='remove' onclick='create_bill_remove(this);' /></td></tr>");
         $("#create_bill h4").html('');
         i++
@@ -39,10 +38,12 @@
         <tr>
             <div class="three wide field">
                 <label>Vendor</label>
-                <select type="text" name="vendor[]" id="create_bill_vendor">
-                <option value="<%= rows3[0].id %>"><%= rows3[0].vendor_name %></option>
+                <select type="text" id="create_bill_vendor">
+                <option value="<%= rows3[0].vendor %>"><%= rows3[0].vendor_name %></option>
                     <% for(var i = 0; i < rows2.length; i++){ %>
-                    <option value="<%= rows2[i].id %>"><%= rows2[i].name %></option>
+                        <% if(rows2[i].id !== rows3[0].vendor) { %>
+                            <option value="<%= rows2[i].id %>"><%= rows2[i].name %></option>
+                        <% } %>
                     <% } %>
                 </select>
             </div>
@@ -71,7 +72,7 @@
     </table>
 </form>
 <br />
-    <form method="post" action="/submitBill" id="create_bill" class="submit_bill ui form">
+    <form method="post" action="/updateBill/<%= rows3[0].id %>" id="create_bill" class="submit_bill ui form">
         <table >
             <tr>
                 <div class="five wide field">
@@ -94,33 +95,34 @@
                 </div>
             </tr>
             <tr>
+                <input type='hidden' id='bill_vendor' name='vendor' value='<%= rows3[0].vendor %>' />
                 <h3>Order Items</h3>
             </tr>
             <% for (var j =0;j < rows3.length; j++) { %> 
                 <tr>
                     <td>
                         <div class="ui input" id="true">
-                            <input type="text" name="order_items[<%= j %>][sku]" style="width: 100px;" readonly=readonly value="<%= rows3[j].sku %>"/>
+                            <input type="text" style="width: 100px;" readonly=readonly value="<%= rows3[j].sku %>"/>
                         </div>
                     </td>
                     <td>
                         <div class="ui input">
-                            <input type="text" style="width: 400px;" name="order_items[<%= j %>][name]" readonly=readonly value="<%= rows3[j].size %> <%= rows3[j].color %> <%= rows3[j].prd_type %>"/>
+                            <input type="text" style="width: 400px;" readonly=readonly value="<%= rows3[j].size %> <%= rows3[j].color %> <%= rows3[j].prd_type %>"/>
                         </div>
                     </td>
                     <td>
                         <div class="ui input">
-                            <input type="text" style="width: 50px;" name="order_items[<%= j %>][qty]" readonly=readonly value="<%= rows3[j].qty %>"/>
+                            <input type="text" style="width: 50px;" readonly=readonly value="<%= rows3[j].qty %>"/>
                         </div>
                     </td>
                     <td>
                         <div class="ui right labeled input">
                             <label for="create_bill_price" class="ui label">$</label>
-                            <input id="create_bill_price" type="text" style="width: 70px;" value="<%= rows3[j].total_price %>" name="order_items[<%= j %>][price]" readonly=readonly>
+                            <input id="create_bill_price" type="text" style="width: 70px;" value="<%= rows3[j].total_price %>" readonly=readonly>
                         </div>
                     </td>
                     <td>
-                        <input type="button" class="ui button" value="remove" onclick="create_bill_remove(this);" />
+                        <input type='button' class='ui button remove' value='Remove' name="delete" data-object="<%= rows3[j].item_id %>" onclick="reloadWithNoCache()" />
                     </td>
                 </tr>
             <% } %>
@@ -133,7 +135,20 @@
         <br />
     </form>
     <script type="text/javascript">
-    var vendor = $('select').val();
+    $(".ui.button.remove").on('click', function(e){
+        e.preventDefault();
+        var data = {data: $(this).attr("data-object")};
+        console.log(data);
+        $.ajax({
+            type: 'post',
+            url: '/billItemRemove',
+            data: data,
+            dataType: 'JSON',
+            success: function(){
+                $(this).prop('disabled', true);
+            }
+        })
+    });
 
     $("#create_bill_delivered").checkbox('setting', 'onChange', function(){
         if ( $(this).is(":checked") ) {
@@ -145,21 +160,20 @@
         }    
     });
 
-    
     $('select').on('change', function() {
-        console.log( $(this).val() );
-        vendor = $(this).val()
+        $("#bill_vendor").val(this.value);
+        console.log($("#bill_vendor").val())
     });
-$(function(){
-    $('.ui.search.codes').search({
-        apiSettings: {
-            url: '../searchOrderItems?q=%{query}'
-        },
-        maxResults: 10,
-        showNoResults: false
-    });
-})
-
+    
+    $(function(){
+        $('.ui.search.codes').search({
+            apiSettings: {
+                url: '/searchOrderItems?q=%{query}'
+            },
+            maxResults: 10,
+            showNoResults: false
+        });
+    })
 
     $(document).on("click keypress", ".result", function (e) {
         if (e.which == 13 || e.type == "click") {

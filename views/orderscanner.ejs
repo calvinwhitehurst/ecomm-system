@@ -24,6 +24,7 @@ let sucSound = function (){
 let set_message = function (sCode) {
   let container = $("#message_container");
   $(container)
+    .empty()
     .show()
     .append('<p>' + sCode + ' is the correct item!</p>')
     .animate({ right: "25%" }, "slow");
@@ -32,6 +33,7 @@ let set_message = function (sCode) {
 let set_neg_message = function (sCode) {
   let container = $("#neg_message_container");
   $(container)
+    .empty()
     .show()
     .append('<p>' + sCode + ' is an incorrect item!</p>')
     .animate({ right: "10%" }, "slow");
@@ -41,6 +43,7 @@ let set_muppet = function () {
   let container = $("#muppet_container");
   let num = Math.floor(Math.random() * 12) + 1;
   $(container)
+    .empty()
     .show()
     .append('<h1>Order Complete!</h1><img src=\"../muppets/' + num + '\.gif">')
     .delay(5000)
@@ -58,6 +61,7 @@ onScan.attachTo(document, {
 	// Look for special keycodes or other event properties specific to
 	// your scanner
 	if (oEvent.which == '189') {
+    console.log("true");
 		return '-';
 	}
 	// Fall back to the default decoder in all other cases
@@ -65,16 +69,25 @@ onScan.attachTo(document, {
     },
     onScan: function(sCode) { // Alternative to document.addEventListener('scan')
       if(sCode.includes('-') === false){
+        skus = [];
         $.ajax({                                      
         url: '../scan/' + sCode,                                      
         success: function(data)          
         {
           data = JSON.parse(data);
-          let orderTable = "<h1>Order " + data[0].order_id + "</h1><table class=\"ui celled collapsing table\"><thead><tr><th>Scanned</th><th>Qty.</th><th>Sku</th><th>Product</th></tr></thead><tbody>";
+          let orderTable = "<table class=\"ui celled collapsing table\"><thead><tr><th>Scanned</th><th>Qty.</th><th>Sku</th><th>Product</th></tr></thead><tbody>";
           for (let obj of data){
+            obj.sku = obj.sku.replace(/\//g, '')
+            if(obj.quantity > 1){
+              for (let i = 0; i < obj.quantity; i++){
+                orderTable += "<tr><td><div class=\"ui fitted checkbox field\"><input type=\"checkbox\" id=\"" + obj.sku + "\"><label></label></div></td><td>" + obj.quantity + "</td><td>" + obj.sku + "</td><td>" + obj.title + "/" + obj.variant + "</td></tr>";
+                skus.push(obj.sku);
+              }
+            } else {
               orderTable += "<tr><td><div class=\"ui fitted checkbox field\"><input type=\"checkbox\" id=\"" + obj.sku + "\"><label></label></div></td><td>" + obj.quantity + "</td><td>" + obj.sku + "</td><td>" + obj.title + "/" + obj.variant + "</td></tr>";
               skus.push(obj.sku);
             }  
+          }  
           orderTable += "</tbody></table>";
           document.getElementById("table-wrapper").innerHTML = orderTable;
           var container = $("#neg_message_container");
@@ -97,7 +110,8 @@ onScan.attachTo(document, {
         if(document.getElementById(sCode) != null){
           let index = skus.indexOf(sCode);
           skus.splice(index, 1);
-          document.getElementById(sCode).checked = true;
+          document.getElementById(sCode).first().checked = true;
+          $('#' + sCode).first().removeAttr('id');
           set_message(sCode);
           if(skus.length === 0){
             set_muppet();
