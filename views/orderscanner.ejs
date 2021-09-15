@@ -80,7 +80,7 @@ onScan.attachTo(document, {
             obj.sku = obj.sku.replace(/\//g, '')
             if(obj.quantity > 1){
               for (let i = 0; i < obj.quantity; i++){
-                orderTable += "<tr><td><div class=\"ui fitted checkbox field\"><input type=\"checkbox\" id=\"" + obj.sku + "\"><label></label></div></td><td>" + obj.quantity + "</td><td>" + obj.sku + "</td><td>" + obj.title + "/" + obj.variant + "</td></tr>";
+                orderTable += "<tr><td><div class=\"ui fitted checkbox field\"><input type=\"checkbox\" id=\"" + obj.sku + "\"><label></label></div></td><td>1</td><td>" + obj.sku + "</td><td>" + obj.title + "/" + obj.variant + "</td></tr>";
                 skus.push(obj.sku);
               }
             } else {
@@ -110,7 +110,7 @@ onScan.attachTo(document, {
         if(document.getElementById(sCode) != null){
           let index = skus.indexOf(sCode);
           skus.splice(index, 1);
-          document.getElementById(sCode).first().checked = true;
+          $('#' + sCode).first().prop('checked', true);
           $('#' + sCode).first().removeAttr('id');
           set_message(sCode);
           if(skus.length === 0){
