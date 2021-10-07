@@ -96,7 +96,7 @@
                                         </script>
                                     </div>
                                     <div id="name">
-                                        <%= name[i] %>
+                                        <%= name[i] %><% if(ukcode[i] != "OK"){ %>-<%= ukcode[i] %><% } %>
                                     </div>
                                 </td>
                                 <% if ((x % 4) == 0 && (x % 40) != 0) { %>

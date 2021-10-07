@@ -8,7 +8,47 @@ const isLoggedIn = require('./custom_modules/isLoggedIn.js')
 const queries = require('./custom_modules/queries.js')
 const onScan = require('onscan.js')
 const sqlQuery = require('./custom_modules/sqlQuery.js')
+const spreadCred = require('../config/spreadCred.js')
+const {
+  getAuthToken,
+  getSpreadSheetValues
+} = require('./custom_modules/googleSheetsService.js')
+const spreadsheetId = spreadCred.spreadsheetId
+const sheetName = spreadCred.sheetName
 
+async function testGetSpreadSheetValues () {
+  try {
+    const auth = await getAuthToken()
+    const response = await getSpreadSheetValues({
+      spreadsheetId,
+      sheetName,
+      auth
+    })
+    // console.log(JSON.stringify(response.data, null, 2));
+    for (var i = 0; i < response.data.values.length; i++) {
+      connection.query(
+        'INSERT INTO `uk_skus` (us_sku, uk_sku) VALUES ("' +
+          response.data.values[i][0] +
+          '","' +
+          response.data.values[i][1] +
+          '");'
+      )
+    }
+  } catch (error) {
+    console.log(error.message, error.stack)
+  }
+}
+
+function main () {
+  testGetSpreadSheetValues()
+}
+
+cron.schedule('0 12 * * * *', function () {
+  connection.query(
+    'DROP TABLE IF EXISTS `uk_skus`;CREATE TABLE `uk_skus` (id INT(11) AUTO_INCREMENT, us_sku VARCHAR(15), uk_sku VARCHAR(15), PRIMARY KEY (id));'
+  )
+  main()
+})
 // cron.schedule("0 46 * * * *", function (){
 //   return new Promise(function (resolve, reject){
 //     connection.query(

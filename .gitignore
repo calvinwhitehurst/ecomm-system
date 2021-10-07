@@ -16,3 +16,6 @@ semantic.json
 transport.js
 options.js
 sessionVariable.js
+test.js
+spreadCred.js
+keys.json

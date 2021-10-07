@@ -65,12 +65,14 @@ router.post('/printcustomlabels', (req, res) => {
 })
 
 router.post('/printscanlabels', (req, res) => {
+  console.log(req.body.ukcode)
   let quantity = req.body.quantity.map(i => Number(i))
   let code = req.body.code
   let colorCode = req.body.colorCode
   let color = req.body.color
   let name = req.body.name
   let size = req.body.size
+  let ukcode = req.body.ukcode
   res.render('printscanlabels', {
     quantity: quantity,
     code: code,
@@ -78,6 +80,7 @@ router.post('/printscanlabels', (req, res) => {
     color: color,
     size: size,
     name: name,
+    ukcode: ukcode,
     layout: false
   })
 })
