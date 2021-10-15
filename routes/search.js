@@ -236,10 +236,10 @@ router.get('/searchcodes', (req, res) => {
 
 router.get('/lookupUk/:id', (req, res) => {
   connection.query(queries.ukLookup, req.params.id, (err, rows) => {
-    console.log(rows[0].uk_sku)
     if (err) throw err
-    if (rows[0].uk_sku) {
+    if (typeof rows[0] !== 'undefined') {
       let data = rows[0].uk_sku
+      console.log(rows[0].uk_sku)
       res.send(data)
     } else {
       res.sendStatus(200)

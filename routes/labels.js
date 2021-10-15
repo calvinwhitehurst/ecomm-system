@@ -53,6 +53,8 @@ router.post('/printcustomlabels', (req, res) => {
   let code = req.body.code
   let name = req.body.name
   let size = req.body.size
+  size = size.toString().replace(/['.*+?^${}()|[\]\\]/g, '\\$&')
+  name = name.toString().replace(/['.*+?^${}()|[\]\\]/g, '\\$&')
   let print_margin = req.body.print_margin
   res.render('printcustomlabels', {
     quantity: quantity,

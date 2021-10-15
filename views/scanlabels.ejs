@@ -6,9 +6,13 @@
     var code = $("#misc_customlabels_code").val();
     var name = $("#misc_customlabels_name").val();
     var size = $("#misc_customlabels_size").val();
+    size = size.toString().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    name = name.toString().replace(/'/g, '&#39;')
+    name = name.substr(0,14)
     var color = $("#misc_customlabels_color").val();
     var colorCode = $("#misc_customlabels_colorCode").val();
     var lookup = code + "-" + colorCode + "-" + size;
+    lookup = encodeURIComponent(lookup);
     $.ajax({
         type: 'GET',
         url: '/lookupUk/' + lookup,
@@ -43,7 +47,8 @@
       });
       return;
     }
-    $("#misc_customlabels table").append(
+    if (size != "S-2X"){
+      $("#misc_customlabels table").append(
       "<tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
         code +
         "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" +
@@ -56,6 +61,52 @@
         size +
         "'/></div><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr>"
     );
+    } else {
+      $("#misc_customlabels table").append(
+      "<tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        code +
+        "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" +
+        color +
+        "'/></div></td><td><div class='ui input'><input type='text' name='colorCode[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        colorCode +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" +
+        name +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='S'/></div><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr><tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        code +
+        "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" +
+        color +
+        "'/></div></td><td><div class='ui input'><input type='text' name='colorCode[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        colorCode +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" +
+        name +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='M'/></div><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr><tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        code +
+        "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" +
+        color +
+        "'/></div></td><td><div class='ui input'><input type='text' name='colorCode[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        colorCode +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" +
+        name +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='L'/></div><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr><tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        code +
+        "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" +
+        color +
+        "'/></div></td><td><div class='ui input'><input type='text' name='colorCode[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        colorCode +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" +
+        name +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='XL'/></div><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr><tr><td><div class='ui input'><input type='text' name='code[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        code +
+        "'/></div></td><td><div class='ui input'><input type='text' name='color[]' style='width: 100px;' readonly=readonly value='" +
+        color +
+        "'/></div></td><td><div class='ui input'><input type='text' name='colorCode[]' style='width: 100px;text-transform: uppercase;' readonly=readonly value='" +
+        colorCode +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 400px;' name='name[]' readonly=readonly value='" +
+        name +
+        "'/></div></td><td><div class='ui input'><input type='text' style='width: 50px;' name='size[]' readonly=readonly value='2X'/></div><td><div class='ui input'><input name='quantity[]' type='text' value='' class='misc_customlabels_quantitites' onkeyup='misc_customlabels_status();' placeholder='Quantity?' /></div></td><td><input type='button' class='ui button' value='remove' onclick='misc_customlabels_remove(this);' /></td></tr>"
+    );
+
+    }
     $(".misc_customlabels_print").hide();
     $("#misc_customlabels h4").html("");
     $("#misc_customlabels").show();
@@ -158,6 +209,7 @@
           <input
             type="text"
             id="misc_customlabels_name"
+            maxlength="15"
             style="width: 400px"
             placeholder="name (optional)"
             value=""
@@ -173,6 +225,7 @@
         id="misc_customlabels_size"
         style="width: 200px"
       >
+        <option value="S-2X">S-2X</option>
         <option value="XS">Extra Small</option>
         <option value="S">Small</option>
         <option value="M">Medium</option>
