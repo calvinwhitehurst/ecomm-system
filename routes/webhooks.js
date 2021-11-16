@@ -158,8 +158,9 @@ function main () {
 //   });
 // });
 
-router.get('/syncUkSkus', () => {
+router.get('/syncUkSkus', (req, res, next) => {
   main()
+  res.status(201).json({ ok: 1 });
 })
 
 router.get('/orderscanner', isLoggedIn, (req, res) => {
